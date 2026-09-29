@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # ------------------------------------------------------------
+  # .NET build + tests + audit
+  # ------------------------------------------------------------
+  dotnet:
+    name: .NET build, test, audit
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Show SDK version
+        run: dotnet --version
+
+      - name: Restore
+        run: dotnet restore dotnet/ApiPilot.slnx
+
+      - name: Build (Release)
+        run: dotnet build dotnet/ApiPilot.slnx -c Release --no-restore --nologo
+
+      - name: Test - Core
+        run: dotnet run --project dotnet/tests/ApiPilot.Core.Tests/ApiPilot.Core.Tests.csproj -c Release --no-build
+
+      - name: Test - AspNetCore
+        run: dotnet run --project dotnet/tests/ApiPilot.AspNetCore.Tests/ApiPilot.AspNetCore.Tests.csproj -c Release --no-build
+
+      - name: Test - Security
+        run: dotnet run --project dotnet/tests/ApiPilot.Security.Tests/ApiPilot.Security.Tests.csproj -c Release --no-build
+
+      - name: Test - ContractTests
+        run: dotnet run --project dotnet/tests/ApiPilot.ContractTests/ApiPilot.ContractTests.csproj -c Release --no-build
+
+      - name: Test - FuzzTests
+        run: dotnet run --project dotnet/tests/ApiPilot.FuzzTests/ApiPilot.FuzzTests.csproj -c Release --no-build
+
+      # BrowserTests needs --allow-skip (one fixture is Unavailable by design).
+      - name: Test - BrowserTests
+        run: dotnet run --project dotnet/tests/ApiPilot.BrowserTests/ApiPilot.BrowserTests.csproj -c Release --no-build -- --allow-skip
+
+      - name: Audit (boundary + zero-dependency)
+        shell: pwsh
+        run: ./audit.ps1
+
+  # ------------------------------------------------------------
+  # JavaScript client build + test
+  # ------------------------------------------------------------
+  javascript:
+    name: JavaScript client build + test
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: javascript/ApiPilot.Client
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install (no deps; verifies empty dependency tree)
+        run: npm install --ignore-scripts
+
+      - name: Build
+        run: node scripts/build.js
+
+      - name: Test
+        run: node --test --test-reporter=tap "tests/**/*.test.js"
