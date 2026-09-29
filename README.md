@@ -652,27 +652,76 @@ belong to the application or to a companion resilience library.
 
 ## Project status - honest notes
 
-- **No external production consumer yet.** The library is at v1.0.0; the
-  sample and the test suite are the evidence. A case study will be added when
-  one exists.
+- **Published on NuGet.** `ApiPilot.Core`, `ApiPilot.AspNetCore`, and
+  `ApiPilot.Security` are live at `1.0.1`. The `1.0.0` line remains on
+  the versions tab; `1.0.1` is the current package.
+- **No external production consumer yet.** The library is at v1.0.1; the
+  sample and the test suite are the evidence. A case study will be added
+  when one exists.
 - **No independent security review scheduled.** The internal test suites
-  (contract tests, fuzz tests, the browser security suite) have passed; no
-  external reviewer has been engaged.
-- **The packages are not published to NuGet yet.** They are packed at 1.0.0 in
-  artifacts/. Publication is a deliberate act: tag v1.0.0 and push; the
-  release workflow handles the rest. The signing step is fail-closed.
+  (contract tests, fuzz tests, the browser security suite) have passed;
+  no external reviewer has been engaged.
+- **Package signing is not yet enabled.** The release workflow is
+  fail-closed: it skips Authenticode signing when no certificate is
+  configured and publishes with a NuGet repository signature. Adding a
+  certificate is a one-secret change with no workflow edit.
+---
+
+## Contributing
+
+ApiPilot is an open-source project. Contributions are welcome.
+
+**Reporting a bug or requesting a feature:**
+
+- Open an issue at https://github.com/sancy1/ApiPilot/issues
+- Include the version, the observed behavior, and the expected behavior.
+
+**Submitting a change:**
+
+- **One concern per PR.** Keep each pull request focused.
+- **Tests for every change.** Every new behavior needs a test; every fixed
+  defect needs a regression test.
+- **Docs updated in the same PR.** If the change affects the contract,
+  update the relevant file under [docs/](docs/) and [SPEC.md](SPEC.md) in
+  the same commit.
+- **Zero build warnings.** The repository enforces
+  `TreatWarningsAsErrors=true`. A PR that introduces a warning will not
+  build.
+- **`audit.ps1` must pass.** The audit enforces the boundary rules and the
+  zero third-party dependency policy. A PR that introduces a forbidden
+  symbol or a third-party production package reference fails the audit and
+  will not be merged.
+- **CI must be green.** Every push and pull request runs the full test
+  suite (six .NET harnesses plus the JavaScript client) on GitHub Actions.
+
+Before submitting a change, run `audit.ps1` locally and confirm CI passes
+on your branch.
 
 ---
 
-## Contributing and license
+## License
 
 ApiPilot is licensed under the MIT License. See [LICENSE](LICENSE).
 
-Before submitting a change, run audit.ps1. The audit enforces the boundary
-rules and the zero third-party dependency policy. A pull request that
-introduces a forbidden symbol or a third-party production package reference
-fails the audit and will not be merged. For the per-concern contracts, start
-at docs/README.md; for the wire contract, read SPEC.md.
+---
 
-The full history - every change and every finding, with sequential IDs - is in
-[CHANGELOG.md](CHANGELOG.md).
+## Author
+
+**Alexander Sanchez Cyril** ([@sancy1](https://github.com/sancy1))
+
+ApiPilot was built as a standalone API boundary library, extracted from the
+author's portfolio of .NET services. It is the companion library to
+[Portfolio.Resilience](https://www.nuget.org/packages/Portfolio.Resilience) -
+the two compose at different layers:
+
+- **Portfolio.Resilience** owns *how* an application safely executes an
+  external or transiently unreliable operation.
+- **ApiPilot** owns *what* the API sends back after the application has
+  produced a result or a terminal failure.
+
+For a production case study of the resilience companion, see **File-Ferry**
+- a Windows desktop application that uses Portfolio.Resilience for every
+filesystem operation.
+
+The full history - every change and every finding, with sequential IDs - is
+in [CHANGELOG.md](CHANGELOG.md).

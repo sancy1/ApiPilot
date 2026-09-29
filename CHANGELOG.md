@@ -23,6 +23,22 @@ requires a new version number. Published tags are never force-pushed, deleted, o
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-09-29
+
+### Changed
+
+- README: split the merged "Contributing and license" section into three
+  sections separated by horizontal rules: **Contributing**, **License**, and
+  **Author**. The Contributing section now describes how ApiPilot actually
+  enforces quality: the six repository-local test harnesses, `audit.ps1`,
+  and the GitHub Actions CI pipeline. The Author section names the author
+  and clarifies the composition with the companion Portfolio.Resilience
+  library. Also corrected the "Project status - honest notes" section: the
+  previous text stated the packages were not yet published to NuGet, which
+  is no longer true. Documentation-only change: no code, no wire-contract,
+  and no API-surface changes. The three packages repack at 1.0.2 so the
+  nuget.org README renders the corrected content.
+
 ## [1.0.1] - 2026-09-29
 
 ### Changed
