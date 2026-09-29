@@ -21,7 +21,7 @@ repository-owned OpenAPI emitter, rate-limit integration, diagnostics, and a
 zero-runtime-dependency browser client - in one library with a cross-language
 wire specification.
 
-**Version:** 1.0.0 | **Target:** .NET 10 | **License:** MIT | **Runtime dependencies:** none
+**Target:** .NET 10 | **License:** MIT | **Runtime dependencies:** none | **Releases:** [github.com/sancy1/ApiPilot/releases](https://github.com/sancy1/ApiPilot/releases)
 
 ---
 
@@ -130,9 +130,7 @@ The full contract is in [SPEC.md](SPEC.md).
 
 ## Quick start
 
-The packages are packed at 1.0.0 in this repository but are not yet
-published to NuGet. Until publication, reference the projects directly or use
-a local package feed. When the packages publish, the install commands will be:
+The three packages are published on NuGet. Install them directly:
 
 ```bash
 dotnet add package ApiPilot.Core
@@ -446,7 +444,7 @@ package is referenced.
 builder.Services.AddApiPilotOpenApi(o =>
 {
     o.DocumentTitle   = "Orders API";
-    o.DocumentVersion = "1.0.0";
+    o.DocumentVersion = "1.0.0";  // your API's version, not the library version
     o.DocumentPath    = "/openapi/v1.json";  // the default
 });
 
@@ -563,7 +561,7 @@ Every number below is counted from an actual run at the v1.0.0 close.
 | Audit | PASS (Sections 1-9, zero failures, zero warnings) |
 | SBOM | generated per release (SPDX 2.3); attached to the release artifacts |
 | Packages packed | 3 nupkg at 1.0.0 |
-| Release workflow | not yet exercised by a pushed v1.0.0 tag |
+| Release workflow | tag-triggered via .github/workflows/release.yml |
 | Independent security review | Not yet scheduled |
 
 The browser suite drives a real headless Chrome/Edge over the Chrome
@@ -653,9 +651,9 @@ belong to the application or to a companion resilience library.
 ## Project status - honest notes
 
 - **Published on NuGet.** `ApiPilot.Core`, `ApiPilot.AspNetCore`, and
-  `ApiPilot.Security` are live at `1.0.1`. The `1.0.0` line remains on
-  the versions tab; `1.0.1` is the current package.
-- **No external production consumer yet.** The library is at v1.0.1; the
+  `ApiPilot.Security` are live at `1.0.3`. Earlier versions remain on
+  the versions tab.
+- **No external production consumer yet.** The library is at v1.0.3; the
   sample and the test suite are the evidence. A case study will be added
   when one exists.
 - **No independent security review scheduled.** The internal test suites

@@ -41,7 +41,7 @@ public sealed class TestAttribute : Attribute { }
 /// </summary>
 public static class TestRunner
 {
-    private static readonly TimeSpan PerTestTimeout = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan PerTestTimeout = TimeSpan.FromSeconds(300);
 
     /// <summary>
     /// Runs all discovered tests. Returns the exit code.

@@ -23,6 +23,47 @@ requires a new version number. Published tags are never force-pushed, deleted, o
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-09-29
+
+### Fixed
+
+- **Browser test timeout hierarchy.** The `BrowserTests` harness declared
+  a 30-second per-test ceiling while a single test's inner timeouts summed
+  to 190 seconds (`SampleHost` build 120s + ready 30s, `BrowserHost` ready
+  30s, `CDP evaluate` 10s). The first test in the file (which pays the
+  cold build and cold browser launch) reliably exceeded the outer 30-second
+  limit on a slower CI runner. Fixed by raising `TestRunner.PerTestTimeout`
+  from 30 to 300 seconds. This is the cause of the `v1.0.2` release
+  workflow failure: `BrowserSecurityTests.CsrfToken_NotInLocalStorage`
+  reported "Test exceeded 30 second timeout."
+
+### Changed
+
+- **README version literals.** Removed the hard-coded `Version: 1.0.0`
+  line from the top of the README; it drifted stale on every bump and
+  contradicted the NuGet chrome (which correctly shows the current package
+  version). Replaced with a link to the GitHub releases page, which is
+  always current. This is the README-layer instance of the class recorded
+  as A-275 and scheduled as Backfill B.7.
+- **README publication status.** Corrected the paragraph that stated the
+  packages were "packed at 1.0.0 in this repository but are not yet
+  published." The three packages are published on NuGet.
+- **README evidence table.** Replaced the stale "Release workflow | not yet
+  exercised by a pushed v1.0.0 tag" row with timeless wording that
+  describes how the workflow triggers rather than how many times it has run.
+- **README status section.** Updated to reflect that `1.0.3` is the current
+  package; earlier versions remain on the versions tab.
+- **README OpenAPI example.** Added a one-line comment to the
+  `DocumentVersion` example clarifying that the value is the consuming
+  API's version, not the ApiPilot library version.
+
+### Note
+
+- This release bundles the README corrections originally intended for
+  `1.0.2`. The `v1.0.2` tag exists and its release workflow failed on the
+  browser test timeout; per the immutability rule the tag is not moved.
+  The content ships as `1.0.3`.
+
 ## [1.0.2] - 2026-09-29
 
 ### Changed
