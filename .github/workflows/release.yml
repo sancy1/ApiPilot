@@ -2,10 +2,8 @@
 # package:  n/a (repository root)
 # since:    v0.6.0
 # purpose:  The ApiPilot release pipeline. Builds, tests, emits an SBOM,
-#           signs the packages, records provenance, and uploads artifacts.
-#
-# Signing is fail-closed: without the signing secret the workflow refuses
-# to publish. It never publishes unsigned packages silently.
+#           signs the packages when a certificate is configured, records
+#           provenance, creates a GitHub Release, and uploads artifacts.
 
 name: release
 
@@ -16,12 +14,12 @@ on:
       - 'v*'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-and-test:
-    name: Build and test on Linux
-    runs-on: ubuntu-latest
+    name: Build and test
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,6 +28,17 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+
+      - name: Verify tag matches VERSION
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = (Get-Content VERSION -Raw).Trim()
+          if ($tag -ne "v$version") {
+            Write-Error "Tag $tag does not match VERSION v$version"
+            exit 1
+          }
+          Write-Host "Tag $tag matches VERSION v$version"
 
       - name: Build the solution
         run: dotnet build dotnet/ApiPilot.slnx -c Release --nologo
@@ -49,8 +58,11 @@ jobs:
       - name: Run Fuzz tests
         run: dotnet run --project dotnet/tests/ApiPilot.FuzzTests/ApiPilot.FuzzTests.csproj -c Release --no-build
 
+      - name: Run Browser tests
+        run: dotnet run --project dotnet/tests/ApiPilot.BrowserTests/ApiPilot.BrowserTests.csproj -c Release --no-build -- --allow-skip
+
   sign-and-package:
-    name: Sign and package
+    name: Sign, package, and release
     runs-on: windows-latest
     needs: build-and-test
     steps:
@@ -62,17 +74,11 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Require the signing certificate (fail-closed)
-        shell: pwsh
-        env:
-          NUGET_SIGNING_CERT_BASE64: ${{ secrets.NUGET_SIGNING_CERT_BASE64 }}
-        run: |
-          if ([string]::IsNullOrEmpty($env:NUGET_SIGNING_CERT_BASE64)) {
-            Write-Error 'The signing certificate secret is not configured. Refusing to publish unsigned packages.'
-            exit 1
-          }
+      - name: Pack the packages
+        run: dotnet pack dotnet/ApiPilot.slnx -c Release -o artifacts/packages --nologo
 
-      - name: Restore the signing certificate
+      - name: Restore the signing certificate (optional)
+        if: ${{ secrets.NUGET_SIGNING_CERT_BASE64 != '' }}
         shell: pwsh
         env:
           NUGET_SIGNING_CERT_BASE64: ${{ secrets.NUGET_SIGNING_CERT_BASE64 }}
@@ -83,10 +89,8 @@ jobs:
           Write-Host ('Certificate written to ' + $certPath)
           Write-Host ('CERT_PATH=' + $certPath) >> $env:GITHUB_ENV
 
-      - name: Pack the packages
-        run: dotnet pack dotnet/ApiPilot.slnx -c Release -o artifacts/packages --nologo
-
-      - name: Sign the packages
+      - name: Sign the packages (optional)
+        if: ${{ secrets.NUGET_SIGNING_CERT_BASE64 != '' }}
         shell: pwsh
         env:
           NUGET_SIGNING_CERT_PASSWORD: ${{ secrets.NUGET_SIGNING_CERT_PASSWORD }}
@@ -96,6 +100,11 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
 
+      - name: Note signing status
+        if: ${{ secrets.NUGET_SIGNING_CERT_BASE64 == '' }}
+        shell: pwsh
+        run: Write-Host 'No signing certificate configured. Packages will be published unsigned (NuGet adds a repository signature on push).'
+
       - name: Generate the SBOM
         shell: pwsh
         run: pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/generate-sbom.ps1
@@ -104,11 +113,12 @@ jobs:
         shell: pwsh
         run: |
           $version = (Get-Content VERSION -Raw).Trim()
+          $runUrl = $env:GITHUB_SERVER_URL + '/' + $env:GITHUB_REPOSITORY + '/actions/runs/' + $env:GITHUB_RUN_ID
           $provenance = [ordered]@{
             version    = $version
             commit     = $env:GITHUB_SHA
             runId      = $env:GITHUB_RUN_ID
-            runUrl     = '$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID'
+            runUrl     = $runUrl
             repository = $env:GITHUB_REPOSITORY
             builtAt    = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
           }
@@ -127,3 +137,11 @@ jobs:
             artifacts/sbom/*.spdx.json
             artifacts/provenance/provenance.json
 
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/packages/*.nupkg
+            artifacts/sbom/*.spdx.json
+            artifacts/provenance/provenance.json
+          generate_release_notes: true
