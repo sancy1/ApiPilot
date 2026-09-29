@@ -64,6 +64,8 @@ jobs:
 
   sign-and-package:
     name: Sign, package, and release
+    env:
+      HAS_SIGNING_CERT: ${{ secrets.NUGET_SIGNING_CERT_BASE64 != '' }}
     runs-on: windows-latest
     needs: build-and-test
     steps:
@@ -79,7 +81,7 @@ jobs:
         run: dotnet pack dotnet/ApiPilot.slnx -c Release -o artifacts/packages --nologo
 
       - name: Restore the signing certificate (optional)
-        if: ${{ secrets.NUGET_SIGNING_CERT_BASE64 != '' }}
+        if: env.HAS_SIGNING_CERT == 'true'
         shell: pwsh
         env:
           NUGET_SIGNING_CERT_BASE64: ${{ secrets.NUGET_SIGNING_CERT_BASE64 }}
@@ -91,7 +93,7 @@ jobs:
           Write-Host ('CERT_PATH=' + $certPath) >> $env:GITHUB_ENV
 
       - name: Sign the packages (optional)
-        if: ${{ secrets.NUGET_SIGNING_CERT_BASE64 != '' }}
+        if: env.HAS_SIGNING_CERT == 'true'
         shell: pwsh
         env:
           NUGET_SIGNING_CERT_PASSWORD: ${{ secrets.NUGET_SIGNING_CERT_PASSWORD }}
@@ -102,7 +104,7 @@ jobs:
           }
 
       - name: Note signing status
-        if: ${{ secrets.NUGET_SIGNING_CERT_BASE64 == '' }}
+        if: env.HAS_SIGNING_CERT != 'true'
         shell: pwsh
         run: Write-Host 'No signing certificate configured. Packages will be published unsigned (NuGet adds a repository signature on push).'
 
