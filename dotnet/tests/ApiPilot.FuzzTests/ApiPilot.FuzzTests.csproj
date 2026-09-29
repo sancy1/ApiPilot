@@ -1,0 +1,32 @@
+<!--
+filepath: dotnet/tests/ApiPilot.FuzzTests/ApiPilot.FuzzTests.csproj
+package:  ApiPilot.FuzzTests
+since:    v0.6.0
+purpose:  Repository-local executable fuzz and abuse harness for the ApiPilot security and query surfaces.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ApiPilot.FuzzTests</RootNamespace>
+    <AssemblyName>ApiPilot.FuzzTests</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ApiPilot.AspNetCore\ApiPilot.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\ApiPilot.Security\ApiPilot.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ApiPilot.TestHarness\TestHarness.cs" Link="TestHarness.cs" />
+  </ItemGroup>
+
+</Project>
+

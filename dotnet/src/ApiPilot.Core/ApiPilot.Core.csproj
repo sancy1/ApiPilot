@@ -1,0 +1,19 @@
+<!--
+filepath: dotnet/src/ApiPilot.Core/ApiPilot.Core.csproj
+package:  ApiPilot.Core
+since:    v0.1.0-alpha.0
+purpose:  Framework-independent core contracts for ApiPilot.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ApiPilot.Core</RootNamespace>
+    <AssemblyName>ApiPilot.Core</AssemblyName>
+    <PackageId>ApiPilot.Core</PackageId>
+    <Description>Framework-independent API boundary contracts for ApiPilot: response envelopes, error models, validation contracts, pagination, correlation, and shared policy abstractions.</Description>
+    <IsPackable>true</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+</Project>
+

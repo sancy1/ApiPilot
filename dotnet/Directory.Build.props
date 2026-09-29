@@ -1,0 +1,58 @@
+<!--
+filepath: dotnet/Directory.Build.props
+package:  n/a (MSBuild shared configuration)
+since:    v0.1.0-alpha.0
+purpose:  Shared MSBuild properties for every project under dotnet/.
+-->
+<Project>
+
+  <!-- Target framework and language -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- Build discipline -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn />
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-Recommended</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+  </PropertyGroup>
+
+  <!-- Documentation -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Assembly metadata shared by every package -->
+  <PropertyGroup>
+    <Company>ApiPilot</Company>
+    <Authors>ApiPilot contributors</Authors>
+    <Product>ApiPilot</Product>
+    <Copyright>Copyright (c) 2026 ApiPilot contributors</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <!-- Version sourced from the single VERSION file at the repository root -->
+  <PropertyGroup>
+    <VersionFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\VERSION'))</VersionFile>
+    <Version>$([System.IO.File]::ReadAllText($(VersionFile)).Trim())</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+    <VersionPrefix>$([System.Text.RegularExpressions.Regex]::Match($(Version), '^(\d+\.\d+\.\d+)').Value)</VersionPrefix>
+    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+    <FileVersion>$(VersionPrefix).0</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+  </PropertyGroup>
+
+</Project>
+

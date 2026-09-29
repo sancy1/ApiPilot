@@ -1,0 +1,27 @@
+<!--
+filepath: dotnet/tests/ApiPilot.Core.Tests/ApiPilot.Core.Tests.csproj
+package:  ApiPilot.Core.Tests
+since:    v0.1.0-alpha.0
+purpose:  Repository-local executable test harness for ApiPilot.Core.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ApiPilot.Core.Tests</RootNamespace>
+    <AssemblyName>ApiPilot.Core.Tests</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ApiPilot.Core\ApiPilot.Core.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Include="..\ApiPilot.TestHarness\TestHarness.cs" Link="TestHarness.cs" />
+  </ItemGroup>
+</Project>
+

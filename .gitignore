@@ -1,0 +1,89 @@
+# -----------------------------------------------------------------------------
+# ApiPilot - .gitignore
+# Target: .NET 10, cross-platform dev (Windows primary, Linux CI)
+# -----------------------------------------------------------------------------
+
+# --- .NET build outputs ---
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+
+# --- Visual Studio / VS Code / Rider ---
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# --- NuGet ---
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+.nuget/
+nuget.config.lock
+
+# --- Artifacts (dotnet pack / publish output) ---
+artifacts/
+publish/
+
+# --- Test results & coverage ---
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+coverage*.json
+coverage*.xml
+
+# --- Benchmark outputs ---
+BenchmarkDotNet.Artifacts/
+
+# --- MSBuild / dotnet ---
+*.binlog
+*.props.bak
+*.targets.bak
+
+# --- OS junk ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+.DS_Store
+
+# --- Editor backup files ---
+*~
+*.bak
+*.orig
+*.rej
+
+# --- Local secret / override files ---
+*.local.json
+appsettings.Development.local.json
+.env
+.env.local
+
+# --- Temporary files ---
+*.tmp
+*.temp
+*.swp
+
+# --- ApiPilot-specific ---
+# Exclude local NuGet test feed (used only for local package verification)
+.local-nuget/
+# Exclude generated SBOM outputs from local builds
+sbom/
+*.spdx.json
+
+# --- Developer-only documents (not published to the public repo) ---
+PLANNING.md
+HANDOVER.md
+IMPLEMENTATION_STATE.md
+*.bak.*

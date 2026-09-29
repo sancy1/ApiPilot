@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    ApiPilot.Security - the security core for ApiPilot.
+    No PackageReference entries. The only external dependency is the
+    Microsoft.AspNetCore.App framework reference, which is part of the
+    .NET platform, not a third-party package. The audit enforces this.
+  -->
+
+  <PropertyGroup>
+    <AssemblyName>ApiPilot.Security</AssemblyName>
+    <RootNamespace>ApiPilot.Security</RootNamespace>
+    <Description>CSRF protection, secure cookie profiles, Origin policy, and Fetch Metadata for ApiPilot.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ApiPilot.Security.Tests" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiPilot.Core\ApiPilot.Core.csproj" />
+    <ProjectReference Include="..\ApiPilot.AspNetCore\ApiPilot.AspNetCore.csproj" />
+  </ItemGroup>
+
+</Project>
+

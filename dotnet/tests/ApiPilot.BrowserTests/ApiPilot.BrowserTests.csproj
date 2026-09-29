@@ -1,0 +1,23 @@
+<!--
+filepath: dotnet/tests/ApiPilot.BrowserTests/ApiPilot.BrowserTests.csproj
+package:  ApiPilot.BrowserTests
+since:    v0.6.0
+purpose:  Repository-local executable browser security harness using the Chrome DevTools Protocol.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ApiPilot.BrowserTests</RootNamespace>
+    <AssemblyName>ApiPilot.BrowserTests</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ApiPilot.TestHarness\TestHarness.cs" Link="TestHarness.cs" />
+  </ItemGroup>
+
+</Project>
+

@@ -1,0 +1,16 @@
+{
+  "sources": [
+    "src/version.js",
+    "src/errors.js",
+    "src/csrf.js",
+    "src/client.js"
+  ],
+  "esmEntry": "src/index.js",
+  "iifeEntry": "src/iife-entry.js",
+  "outputs": {
+    "esm": "dist/apipilot-client.esm.js",
+    "iife": "dist/apipilot-client.iife.js",
+    "types": "dist/apipilot-client.d.ts"
+  }
+}
+

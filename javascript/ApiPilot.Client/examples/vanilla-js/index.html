@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ApiPilot client - vanilla JS example</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; }
+        pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; }
+        button { padding: 0.5rem 1rem; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <h1>ApiPilot client - vanilla JS example</h1>
+    <p>
+        This example imports the client directly from the built ESM
+        artifact using a relative path. No package manager is involved.
+    </p>
+    <button id="get-items">GET /items</button>
+    <button id="post-item">POST /items</button>
+    <pre id="output">(no request yet)</pre>
+    <script type="module" src="./app.js"></script>
+</body>
+</html>
+

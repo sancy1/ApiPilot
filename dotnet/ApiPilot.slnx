@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="src/ApiPilot.Core/ApiPilot.Core.csproj" />
+  <Project Path="src/ApiPilot.AspNetCore/ApiPilot.AspNetCore.csproj" />
+  <Project Path="tests/ApiPilot.Core.Tests/ApiPilot.Core.Tests.csproj" />
+  <Project Path="tests/ApiPilot.AspNetCore.Tests/ApiPilot.AspNetCore.Tests.csproj" />
+  <Project Path="src/ApiPilot.Security/ApiPilot.Security.csproj" />
+  <Project Path="tests/ApiPilot.Security.Tests/ApiPilot.Security.Tests.csproj" />
+  <Project Path="tests/ApiPilot.ContractTests/ApiPilot.ContractTests.csproj" />
+  <Project Path="tests/ApiPilot.FuzzTests/ApiPilot.FuzzTests.csproj" />
+  <Project Path="tests/ApiPilot.BrowserTests/ApiPilot.BrowserTests.csproj" />
+</Solution>

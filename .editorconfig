@@ -1,0 +1,218 @@
+# filepath: .editorconfig
+# package:  n/a (repository root)
+# since:    v0.1.0-alpha.0
+# purpose:  Repository-wide editor and analyzer conventions for ApiPilot.
+# Reference: https://editorconfig.org
+
+# Top-most EditorConfig file. Do not search parent directories.
+root = true
+
+# -----------------------------------------------------------------------------
+# Defaults for every file type
+# -----------------------------------------------------------------------------
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# -----------------------------------------------------------------------------
+# C# source files
+# -----------------------------------------------------------------------------
+[*.cs]
+indent_size = 4
+
+# --- Language features ---
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:suggestion
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+csharp_style_expression_bodied_constructors = false:suggestion
+csharp_style_expression_bodied_operators = when_on_single_line:suggestion
+csharp_style_prefer_primary_constructors = false:suggestion
+csharp_prefer_braces = true:warning
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_prefer_switch_expression = true:suggestion
+csharp_style_prefer_pattern_matching = true:suggestion
+csharp_style_prefer_not_pattern = true:suggestion
+csharp_style_prefer_extended_property_pattern = true:suggestion
+csharp_style_prefer_method_group_conversion = true:suggestion
+csharp_style_prefer_top_level_statements = false:suggestion
+csharp_style_prefer_null_check_over_is_null = true:suggestion
+csharp_style_throw_expression = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestion
+csharp_style_unused_value_expression_statement_preference = discard_variable:suggestion
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+
+# --- Null checking ---
+csharp_style_prefer_local_over_anonymous_function = true:suggestion
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+csharp_style_prefer_tuple_swap = true:suggestion
+csharp_style_prefer_utf8_string_literals = true:suggestion
+csharp_style_prefer_readonly_struct = true:suggestion
+csharp_style_prefer_readonly_struct_member = true:suggestion
+csharp_style_prefer_unbound_generic_type_in_nameof = true:suggestion
+csharp_style_allow_embedded_statements_on_same_line_experimental = true:silent
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true:silent
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true:silent
+csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true:silent
+csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true:silent
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true:silent
+
+# --- Using directives ---
+csharp_using_directive_placement = outside_namespace:warning
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# --- Braces and newlines ---
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+csharp_indent_case_contents = true
+csharp_indent_case_contents_when_block = true
+csharp_indent_switch_labels = true
+csharp_indent_labels = one_less_than_current
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+
+# --- Spacing ---
+csharp_space_after_cast = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+
+# -----------------------------------------------------------------------------
+# Naming rules
+# -----------------------------------------------------------------------------
+dotnet_naming_rule.interfaces_start_with_i.severity = warning
+dotnet_naming_rule.interfaces_start_with_i.symbols = interfaces
+dotnet_naming_rule.interfaces_start_with_i.style = i_prefixed
+
+dotnet_naming_rule.types_are_pascal_case.severity = warning
+dotnet_naming_rule.types_are_pascal_case.symbols = types
+dotnet_naming_rule.types_are_pascal_case.style = pascal_case
+
+dotnet_naming_rule.public_members_are_pascal_case.severity = warning
+dotnet_naming_rule.public_members_are_pascal_case.symbols = public_members
+dotnet_naming_rule.public_members_are_pascal_case.style = pascal_case
+
+dotnet_naming_rule.private_fields_are_underscore_camel_case.severity = warning
+dotnet_naming_rule.private_fields_are_underscore_camel_case.symbols = private_fields
+dotnet_naming_rule.private_fields_are_underscore_camel_case.style = underscore_camel_case
+
+dotnet_naming_rule.locals_and_parameters_are_camel_case.severity = warning
+dotnet_naming_rule.locals_and_parameters_are_camel_case.symbols = locals_and_parameters
+dotnet_naming_rule.locals_and_parameters_are_camel_case.style = camel_case
+
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.types.applicable_kinds = class,struct,enum,delegate
+dotnet_naming_symbols.public_members.applicable_kinds = property,method,field,event
+dotnet_naming_symbols.public_members.applicable_accessibilities = public,protected
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.locals_and_parameters.applicable_kinds = local,parameter
+
+dotnet_naming_style.i_prefixed.required_prefix = I
+dotnet_naming_style.i_prefixed.capitalization = pascal_case
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+dotnet_naming_style.camel_case.capitalization = camel_case
+
+# -----------------------------------------------------------------------------
+# Analyzer preferences
+# -----------------------------------------------------------------------------
+dotnet_analyzer_diagnostic.category-Style.severity = suggestion
+dotnet_analyzer_diagnostic.category-Performance.severity = suggestion
+dotnet_analyzer_diagnostic.category-Reliability.severity = warning
+dotnet_analyzer_diagnostic.category-Security.severity = warning
+dotnet_analyzer_diagnostic.category-Usage.severity = suggestion
+dotnet_analyzer_diagnostic.category-Naming.severity = warning
+
+dotnet_code_quality_unused_parameters = all:suggestion
+dotnet_remove_unnecessary_suppression_exclusions = none
+
+# -----------------------------------------------------------------------------
+# JSON
+# -----------------------------------------------------------------------------
+[*.json]
+indent_size = 2
+
+# -----------------------------------------------------------------------------
+# YAML (CI workflows)
+# -----------------------------------------------------------------------------
+[*.yml]
+indent_size = 2
+[*.yaml]
+indent_size = 2
+
+# -----------------------------------------------------------------------------
+# XML (.csproj, .slnx, .props)
+# -----------------------------------------------------------------------------
+[*.csproj]
+indent_size = 2
+[*.slnx]
+indent_size = 2
+[*.props]
+indent_size = 2
+[*.targets]
+indent_size = 2
+
+# -----------------------------------------------------------------------------
+# Markdown
+# -----------------------------------------------------------------------------
+[*.md]
+indent_size = 4
+trim_trailing_whitespace = false
+
+# -----------------------------------------------------------------------------
+# PowerShell (audit.ps1 and future scripts)
+# -----------------------------------------------------------------------------
+[*.ps1]
+indent_size = 4
+
+# -----------------------------------------------------------------------------
+# VERSION and other version files
+# -----------------------------------------------------------------------------
+[VERSION]
+insert_final_newline = false
+
+# -----------------------------------------------------------------------------
+# Git internals
+# -----------------------------------------------------------------------------
+[.git/**]
+ignore = true
+
+
+# -----------------------------------------------------------------------------
+# Test project conventions
+# -----------------------------------------------------------------------------
+# Test method names use the MethodName_Condition_Expected convention, which
+# CA1707 (identifiers should not contain underscores) would flag. Underscores
+# in test method names are idiomatic and intentional.
+#
+# CA1822 (member can be static) is disabled for tests because the test runner
+# instantiates the class and invokes methods through reflection. Test methods
+# must remain instance methods even when they do not read instance state.
+[dotnet/tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.CA1806.severity = none
+dotnet_diagnostic.CA1859.severity = none
+
+
+

@@ -1,0 +1,32 @@
+<!--
+filepath: dotnet/tests/ApiPilot.ContractTests/ApiPilot.ContractTests.csproj
+package:  ApiPilot.ContractTests
+since:    v0.6.0
+purpose:  Repository-local executable contract-test harness for the ApiPilot wire contract.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ApiPilot.ContractTests</RootNamespace>
+    <AssemblyName>ApiPilot.ContractTests</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ApiPilot.AspNetCore\ApiPilot.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\ApiPilot.Security\ApiPilot.Security.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Include="..\ApiPilot.TestHarness\TestHarness.cs" Link="TestHarness.cs" />
+  </ItemGroup>
+</Project>
+
