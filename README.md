@@ -7,6 +7,13 @@ purpose:  Project identity, scope, the wire contract, and the documentation map 
 
 # ApiPilot
 
+[![ApiPilot.Core](https://img.shields.io/nuget/v/ApiPilot.Core.svg?label=ApiPilot.Core)](https://www.nuget.org/packages/ApiPilot.Core)
+[![ApiPilot.AspNetCore](https://img.shields.io/nuget/v/ApiPilot.AspNetCore.svg?label=ApiPilot.AspNetCore)](https://www.nuget.org/packages/ApiPilot.AspNetCore)
+[![ApiPilot.Security](https://img.shields.io/nuget/v/ApiPilot.Security.svg?label=ApiPilot.Security)](https://www.nuget.org/packages/ApiPilot.Security)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![.NET 10](https://img.shields.io/badge/.NET-10-512BD4.svg)](https://dotnet.microsoft.com/)
+[![Build](https://github.com/sancy1/ApiPilot/actions/workflows/ci.yml/badge.svg)](https://github.com/sancy1/ApiPilot/actions/workflows/ci.yml)
+
 **A contract-first API boundary for ASP.NET Core.** Consistent JSON envelopes,
 stable error codes, validation, pagination, correlation, CSRF issuance and
 validation, secure cookie profiles, Origin and Fetch Metadata policy, a
@@ -232,10 +239,10 @@ rejection handler and the standard `RATE_LIMITED` envelope.
 
 | Package | Purpose |
 | --- | --- |
-| **ApiPilot.Core** | framework-independent contracts: the envelope, the error model, validation, pagination, correlation abstractions. Depends only on the .NET BCL. |
-| **ApiPilot.AspNetCore** | the ASP.NET Core adapter: middleware, filters, results, serialization, content negotiation, OpenAPI emitter, rate-limit rejection. |
-| **ApiPilot.Security** | CSRF issuance and validation, secure cookie profiles, Origin policy, Fetch Metadata, Data Protection integration. |
-| **@apipilot/client** | zero-runtime-dependency browser fetch client. |
+| **[ApiPilot.Core](https://www.nuget.org/packages/ApiPilot.Core)** | framework-independent contracts: the envelope, the error model, validation, pagination, correlation abstractions. Depends only on the .NET BCL. |
+| **[ApiPilot.AspNetCore](https://www.nuget.org/packages/ApiPilot.AspNetCore)** | the ASP.NET Core adapter: middleware, filters, results, serialization, content negotiation, OpenAPI emitter, rate-limit rejection. |
+| **[ApiPilot.Security](https://www.nuget.org/packages/ApiPilot.Security)** | CSRF issuance and validation, secure cookie profiles, Origin policy, Fetch Metadata, Data Protection integration. |
+| **[@apipilot/client](https://github.com/sancy1/ApiPilot/tree/main/javascript/ApiPilot.Client)** | zero-runtime-dependency browser fetch client. |
 
 Install only the layers an application needs. A service that only needs the
 envelope and error contract references `ApiPilot.Core` alone.
