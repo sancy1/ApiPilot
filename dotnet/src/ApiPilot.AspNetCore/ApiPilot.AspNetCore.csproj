@@ -7,6 +7,7 @@ purpose:  ASP.NET Core integration for ApiPilot response contracts and browser s
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RootNamespace>ApiPilot.AspNetCore</RootNamespace>
     <AssemblyName>ApiPilot.AspNetCore</AssemblyName>
     <PackageId>ApiPilot.AspNetCore</PackageId>
@@ -26,6 +27,10 @@ purpose:  ASP.NET Core integration for ApiPilot response contracts and browser s
 
   <ItemGroup>
     <InternalsVisibleTo Include="ApiPilot.AspNetCore.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
 

@@ -7,6 +7,8 @@
   -->
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
     <OutputType>Exe</OutputType>
     <AssemblyName>ApiPilot.Security.Tests</AssemblyName>
     <RootNamespace>ApiPilot.Security.Tests</RootNamespace>

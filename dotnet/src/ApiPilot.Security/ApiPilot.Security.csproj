@@ -8,8 +8,12 @@
   -->
 
   <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <AssemblyName>ApiPilot.Security</AssemblyName>
     <RootNamespace>ApiPilot.Security</RootNamespace>
+    <PackageId>ApiPilot.Security</PackageId>
+    <IsPackable>true</IsPackable>
+    <IsTestProject>false</IsTestProject>
     <Description>CSRF protection, secure cookie profiles, Origin policy, and Fetch Metadata for ApiPilot.</Description>
   </PropertyGroup>
 
@@ -23,5 +27,9 @@
     <ProjectReference Include="..\ApiPilot.AspNetCore\ApiPilot.AspNetCore.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
 
