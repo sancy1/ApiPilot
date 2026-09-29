@@ -7,11 +7,11 @@
 #   Implements : n/a (repository script)
 #   Depends on : PowerShell 5.1, dotnet CLI
 #   Used by    : local pre-commit, CI test workflow
-#   See also   : PLANNING.md, SPEC.md
+#   See also   : SPEC.md, CHANGELOG.md
 # -----------------------------------------------------------------------------
 
 param(
-    [string]$Root = "C:\Users\HP\Desktop\ApiPilot",
+    [string]$Root = $PSScriptRoot,
     [switch]$Verbose,
     [switch]$FailOnWarnings
 )
@@ -61,7 +61,6 @@ $requiredFiles = @(
     ".gitignore",
     "CHANGELOG.md",
     "LICENSE",
-    "PLANNING.md",
     "README.md",
     "SPEC.md",
     "VERSION",

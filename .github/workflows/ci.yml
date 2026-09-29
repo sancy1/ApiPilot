@@ -86,4 +86,4 @@ jobs:
         run: node scripts/build.js
 
       - name: Test
-        run: node --test --test-reporter=tap "tests/**/*.test.js"
+        run: npm test
