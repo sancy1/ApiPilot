@@ -23,6 +23,18 @@ requires a new version number. Published tags are never force-pushed, deleted, o
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-09-29
+
+### Changed
+
+- README: added NuGet version badges for the three packages (ApiPilot.Core,
+  ApiPilot.AspNetCore, ApiPilot.Security), an MIT license badge, a .NET 10
+  badge, and a CI build-status badge. The package names in the Packages
+  table are now clickable links to their nuget.org pages. An install-command
+  block was added under the table. Documentation-only change: no code, no
+  wire-contract, and no API-surface changes. The three packages repack at
+  1.0.1 so the nuget.org README renders the updated content.
+
 ## [1.0.0] - 2026-09-29
 
 ### Added (Phase 5.5)
