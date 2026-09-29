@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   build-and-test:
@@ -136,6 +137,21 @@ jobs:
             artifacts/packages/*.nupkg
             artifacts/sbom/*.spdx.json
             artifacts/provenance/provenance.json
+
+      - name: NuGet login (OIDC trusted publishing)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: sancy
+
+      - name: Push to NuGet
+        shell: pwsh
+        run: |
+          Get-ChildItem artifacts/packages -Filter *.nupkg | ForEach-Object {
+            Write-Host ("Pushing " + $_.Name)
+            dotnet nuget push $_.FullName --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
