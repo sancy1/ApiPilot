@@ -59,9 +59,9 @@
       run time, printed in the banner, and compared against the expected
       version. A mismatch fails the run.
     -->
-    <PackageReference Include="ApiPilot.Core"       Version="[1.0.3]" />
-    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.3]" />
-    <PackageReference Include="ApiPilot.Security"   Version="[1.0.3]" />
+    <PackageReference Include="ApiPilot.Core"       Version="[1.0.4]" />
+    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.4]" />
+    <PackageReference Include="ApiPilot.Security"   Version="[1.0.4]" />
   </ItemGroup>
 
 </Project>

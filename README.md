@@ -650,12 +650,12 @@ belong to the application or to a companion resilience library.
 
 ## Project status - honest notes
 
-- **Published on NuGet.** `ApiPilot.Core`, `ApiPilot.AspNetCore`, and
-  `ApiPilot.Security` are live at `1.0.3`. Earlier versions remain on
-  the versions tab.
-- **No external production consumer yet.** The library is at v1.0.3; the
-  sample and the test suite are the evidence. A case study will be added
-  when one exists.
+- **Published on NuGet.** The three packages are live at
+  [nuget.org](https://www.nuget.org/packages/ApiPilot.Core); see
+  [Releases](https://github.com/sancy1/ApiPilot/releases) for the current
+  version.
+- **No external production consumer yet.** The sample and the test suite
+  are the evidence. A case study will be added when one exists.
 - **No independent security review scheduled.** The internal test suites
   (contract tests, fuzz tests, the browser security suite) have passed;
   no external reviewer has been engaged.

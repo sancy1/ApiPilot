@@ -23,6 +23,28 @@ requires a new version number. Published tags are never force-pushed, deleted, o
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-09-30
+
+### Fixed
+
+- **README status section version drift (A-275 class at the README layer).**
+  The 1.0.4 README carried a stale `` `1.0.3` `` literal in the "Project status"
+  section: "the three packages are live at `1.0.3`" and "the library is at
+  v1.0.3". Since 1.0.4 was published, the literal was wrong by one version.
+  Fix: the status section is now version-free. It links to the NuGet package
+  page and the Releases page, which are always current. This is the systemic
+  fix for the version-literal class at the README layer, matching the
+  Backfill B.7 approach for the code layer.
+- **Verifier pinned package version.** The consumer verification canary
+  referenced ApiPilot.Core, ApiPilot.AspNetCore, and ApiPilot.Security at
+  the pinned version 1.0.3. Repinned to 1.0.4 so the verifier certifies
+  the current published version.
+
+### Note
+
+- This is a documentation-only release. No code, no wire-contract, and no
+  API-surface changes.
+
 ## [1.0.4] - 2026-09-30
 
 ### Fixed
