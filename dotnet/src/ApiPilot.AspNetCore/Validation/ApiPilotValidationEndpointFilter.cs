@@ -122,7 +122,7 @@ public static class ApiPilotValidationEndpointExtensions
             var options = filterFactoryContext.ApplicationServices
                 .GetRequiredService<IOptions<ApiPilotValidationOptions>>()
                 .Value;
-            var keyTransform = options.KeyTransform ?? FieldKeyNormalizer.Normalize;
+            var keyTransform = ValidationKeyTransforms.Resolve(options);
 
             Func<HttpContext, IReadOnlyList<ApiErrorField>> wrapped = httpContext =>
             {

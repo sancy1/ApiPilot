@@ -9,6 +9,8 @@
 //   See also   : SPEC.md (error envelope), ApiErrorField.cs, ApiErrorCode.cs
 // -----------------------------------------------------------------------------
 
+using System.Text.Json.Serialization;
+
 namespace ApiPilot.Core.Errors;
 
 /// <summary>
@@ -39,6 +41,11 @@ public sealed record ApiError
     /// field. Null when the error has no fields. This shape matches the
     /// wire contract in SPEC.md.
     /// </summary>
+    /// <remarks>
+    /// The ApiError.Fields converter preserves field-key casing verbatim during
+    /// JSON serialization and deserialization.
+    /// </remarks>
+    [JsonConverter(typeof(ApiErrorFieldsConverter))]
     public IReadOnlyDictionary<string, IReadOnlyList<string>>? Fields { get; }
 
     private ApiError(

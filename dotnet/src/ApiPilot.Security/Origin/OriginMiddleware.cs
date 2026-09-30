@@ -140,27 +140,7 @@ public sealed partial class OriginMiddleware
 
     private static CsrfPolicy ResolvePolicy(HttpContext httpContext)
     {
-        var endpoint = httpContext.GetEndpoint();
-        if (endpoint is null)
-        {
-            return CsrfPolicy.UseGlobal;
-        }
-
-        CsrfPolicy resolved = CsrfPolicy.UseGlobal;
-        foreach (var metadata in endpoint.Metadata.GetOrderedMetadata<CsrfEndpointMetadata>())
-        {
-            if (metadata.Policy == CsrfPolicy.Require)
-            {
-                resolved = CsrfPolicy.Require;
-            }
-            else if (metadata.Policy == CsrfPolicy.Skip
-                && resolved != CsrfPolicy.Require)
-            {
-                resolved = CsrfPolicy.Skip;
-            }
-        }
-
-        return resolved;
+        return CsrfEndpointPolicyResolver.Resolve(httpContext);
     }
 
     private async Task WriteErrorAsync(HttpContext httpContext, string code)
