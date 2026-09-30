@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    filepath: dotnet/verify/Verify.ApiPilot/Verify.ApiPilot.csproj
+    layer:    Verification
+    package:  Verify.ApiPilot
+    purpose:  The ApiPilot Consumer Verification Application. It consumes the
+              published ApiPilot NuGet packages through PackageReference only,
+              exercises every documented capability through real runtime flows,
+              and fails loudly when the shipped artifact drifts from its
+              documentation or its own runtime behavior.
+
+              It is not a Sample, Demo, Playground, or Example. It is a canary.
+
+              It does not reference the library source projects. It is not part
+              of ApiPilot.slnx.
+
+              Run command, in prose: dotnet run with the project argument set
+              to dotnet/verify/Verify.ApiPilot, in Release configuration.
+
+    relates:  Consumes ApiPilot.Core, ApiPilot.AspNetCore, ApiPilot.Security
+              from nuget.org at the pinned version 1.0.3.
+
+              Uses its own Directory.Build.props (this folder) via the
+              DirectoryBuildPropsPath property, so it does not inherit the
+              library-wide build rules in dotnet/Directory.Build.props.
+
+              The isolation is proven by a diagnostic build, not assumed.
+
+    note:     XML comments may not contain the two-character sequence of two
+              hyphens, and may not end with a single hyphen. This file obeys
+              that rule. Any future edit must also obey it.
+  -->
+
+  <PropertyGroup>
+    <!--
+      Explicit isolation from the parent Directory.Build.props. When
+      DirectoryBuildPropsPath is set, MSBuild uses the named file and does not
+      search upward for Directory.Build.props. This property is evaluated
+      before Microsoft.Common.props, so the parent is not imported.
+
+      The isolation is verified by a diagnostic build that emits a binlog, and
+      by inspecting the binlog. It is not claimed until proven.
+    -->
+    <DirectoryBuildPropsPath>$(MSBuildThisFileDirectory)Directory.Build.props</DirectoryBuildPropsPath>
+
+    <AssemblyName>Verify.ApiPilot</AssemblyName>
+    <RootNamespace>Verify.ApiPilot</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Pinned mode: the verifier certifies exactly the published version 1.0.3.
+      Advancing the version is a deliberate edit by a human, not an automatic
+      range resolution. Compatibility mode, using a range such as version 1.0.3
+      through version 2.0.0, is a separate explicit opt in, never the default.
+
+      The resolved version of every package is read from project.assets.json at
+      run time, printed in the banner, and compared against the expected
+      version. A mismatch fails the run.
+    -->
+    <PackageReference Include="ApiPilot.Core"       Version="[1.0.3]" />
+    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.3]" />
+    <PackageReference Include="ApiPilot.Security"   Version="[1.0.3]" />
+  </ItemGroup>
+
+</Project>

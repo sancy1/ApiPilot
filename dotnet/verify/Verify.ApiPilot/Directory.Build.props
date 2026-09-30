@@ -1,0 +1,75 @@
+<Project>
+
+  <!--
+    filepath: dotnet/verify/Verify.ApiPilot/Directory.Build.props
+    layer:    Verification
+    package:  Verify.ApiPilot
+    purpose:  The verifier-local MSBuild properties. This file is referenced
+              explicitly by Verify.ApiPilot.csproj through DirectoryBuildPropsPath
+              so the parent dotnet/Directory.Build.props is not imported by this
+              project. Every property the verifier needs is set here.
+
+              The verifier must behave like a project from a different repository.
+              It consumes the published ApiPilot NuGet packages, not the library's
+              source graph. Isolation is proven by a diagnostic build, not claimed.
+
+    relates:  Referenced by Verify.ApiPilot.csproj via DirectoryBuildPropsPath.
+              Sibling of the library's own dotnet/Directory.Build.props, which the
+              verifier deliberately does not inherit.
+  -->
+
+  <!-- Target framework and language -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- The verifier is an executable, not a package. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <!-- Build discipline. The verifier chooses these; it does not inherit them. -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn />
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-Recommended</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+  </PropertyGroup>
+
+  <!-- The verifier is a canary, not a library. It ships no XML documentation. -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!--
+    The verifier has no version of its own. It does NOT read the repository
+    root VERSION file. The resolved NuGet package versions are what the
+    verifier reports at run time, through the PackageVersionReader.
+  -->
+  <PropertyGroup>
+    <Version>0.0.0</Version>
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0.0</FileVersion>
+    <InformationalVersion>Verify.ApiPilot (consumer verification application)</InformationalVersion>
+    <Product>Verify.ApiPilot</Product>
+    <Company></Company>
+    <Authors></Authors>
+    <Copyright></Copyright>
+    <RepositoryType></RepositoryType>
+    <RepositoryUrl></RepositoryUrl>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageTags></PackageTags>
+  </PropertyGroup>
+
+</Project>
