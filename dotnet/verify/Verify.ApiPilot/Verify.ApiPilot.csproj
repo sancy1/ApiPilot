@@ -19,7 +19,7 @@
               to dotnet/verify/Verify.ApiPilot, in Release configuration.
 
     relates:  Consumes ApiPilot.Core, ApiPilot.AspNetCore, ApiPilot.Security
-              from nuget.org at the pinned version 1.0.3.
+              from nuget.org at the pinned version 1.0.5.
 
               Uses its own Directory.Build.props (this folder) via the
               DirectoryBuildPropsPath property, so it does not inherit the
@@ -50,18 +50,18 @@
 
   <ItemGroup>
     <!--
-      Pinned mode: the verifier certifies exactly the published version 1.0.3.
+      Pinned mode: the verifier certifies exactly the published version 1.0.5.
       Advancing the version is a deliberate edit by a human, not an automatic
-      range resolution. Compatibility mode, using a range such as version 1.0.3
+      range resolution. Compatibility mode, using a range such as version 1.0.5
       through version 2.0.0, is a separate explicit opt in, never the default.
 
       The resolved version of every package is read from project.assets.json at
       run time, printed in the banner, and compared against the expected
       version. A mismatch fails the run.
     -->
-    <PackageReference Include="ApiPilot.Core"       Version="[1.0.4]" />
-    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.4]" />
-    <PackageReference Include="ApiPilot.Security"   Version="[1.0.4]" />
+    <PackageReference Include="ApiPilot.Core"       Version="[1.0.5]" />
+    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.5]" />
+    <PackageReference Include="ApiPilot.Security"   Version="[1.0.5]" />
   </ItemGroup>
 
 </Project>
