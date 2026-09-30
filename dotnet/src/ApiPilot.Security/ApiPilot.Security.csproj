@@ -14,7 +14,7 @@
     <PackageId>ApiPilot.Security</PackageId>
     <IsPackable>true</IsPackable>
     <IsTestProject>false</IsTestProject>
-    <Description>CSRF protection, secure cookie profiles, Origin policy, and Fetch Metadata for ApiPilot.</Description>
+    <Description>CSRF protection, secure cookie profiles, Origin policy, and Fetch Metadata for ApiPilot. Requires ApiPilot.Core and ApiPilot.AspNetCore. See the full boundary at https://github.com/sancy1/ApiPilot.</Description>
   </PropertyGroup>
 
   <ItemGroup>

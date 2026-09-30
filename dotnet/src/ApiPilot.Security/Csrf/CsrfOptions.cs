@@ -78,6 +78,7 @@ public enum CsrfRotationRequirement
 /// to the public wire codes the middleware writes. The internal reason
 /// is logged and never returned. Ok is not a key in the dictionary;
 /// a successful validation produces no code.
+/// The declared type is <c>IDictionary&lt;CsrfTokenParseResult, string&gt;</c>.
 ///
 /// The PreAuthBindingSource delegate is the explicit opt-in for
 /// pre-authentication issuance. Without it, an unauthenticated request
@@ -142,6 +143,7 @@ public sealed class CsrfOptions
     /// HttpContext and returns a stable binding, or null when it cannot
     /// produce one. When this is null, an unauthenticated request with no
     /// stable subject claim has no binding and cannot receive a token.
+    /// The declared type is <c>Func&lt;HttpContext, string?&gt;?</c>.
     /// </summary>
     public Func<Microsoft.AspNetCore.Http.HttpContext, string?>? PreAuthBindingSource { get; set; }
 

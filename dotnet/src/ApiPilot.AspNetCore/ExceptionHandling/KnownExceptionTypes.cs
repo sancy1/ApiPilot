@@ -43,6 +43,17 @@ public static class KnownExceptionTypes
     /// <summary>
     /// The default mapping table. ArgumentNullException is listed before
     /// ArgumentException because the former derives from the latter.
+    /// The full default mapping, walked top to bottom until the first match:
+    /// <list type="bullet">
+    /// <item><description><c>ArgumentNullException</c> to <c>VALIDATION_ERROR</c> (400)</description></item>
+    /// <item><description><c>ArgumentException</c> to <c>VALIDATION_ERROR</c> (400)</description></item>
+    /// <item><description><c>KeyNotFoundException</c> to <c>RESOURCE_NOT_FOUND</c> (404)</description></item>
+    /// <item><description><c>UnauthorizedAccessException</c> to <c>FORBIDDEN</c> (403)</description></item>
+    /// <item><description><c>InvalidOperationException</c> to <c>CONFLICT</c> (409)</description></item>
+    /// <item><description>any other exception to <c>INTERNAL_ERROR</c> (500)</description></item>
+    /// </list>
+    /// The error-code-to-status mapping may be overridden per application through
+    /// <c>ApiExceptionOptions.ErrorCodeToStatusMap</c>.
     /// </summary>
     public static IReadOnlyList<KnownExceptionType> Default { get; } = new[]
     {

@@ -23,6 +23,98 @@ requires a new version number. Published tags are never force-pushed, deleted, o
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-09-30
+
+### Fixed
+
+- **F-65 - the CSRF attributes are ineffective on every documented application path.**
+  The shared resolver `CsrfEndpointPolicyResolver` reads both the canonical
+  `CsrfEndpointMetadata` record and the `ApiPilotSkipCsrfAttribute` and
+  `ApiPilotRequireCsrfAttribute` instances the framework attaches to endpoint
+  metadata, and applies the precedence rule Require over Skip over UseGlobal.
+  The CSRF, Origin, and Fetch Metadata middleware all delegate to it. The
+  mechanism, proven by the three-path endpoint-metadata diagnostic: the
+  framework attaches the attribute instance to endpoint metadata in all three
+  documented paths (minimal-API WithMetadata, decorated handler, controller
+  action) but does not invoke PopulateMetadata, so the canonical record is
+  never produced; the middleware previously read only the record and fell back
+  to the global policy. The finding scope is broadened from the verifier
+  minimal-API-only framing to all three paths and all three security features.
+  20 previously-red tests now green.
+
+- **F-59 - the KeyTransform identity override is ineffective on the wire.**
+  The `ApiErrorFieldsConverter`, applied to the `ApiError.Fields` property,
+  writes and reads dictionary keys verbatim, overriding the serializer
+  DictionaryKeyPolicy for that property only. The mechanism, proven
+  end-to-end: the in-memory field key was correct (the MVC filter unit test
+  proved it); the serializer DictionaryKeyPolicy = CamelCase camelCased the
+  dictionary key on the wire, so Email became email regardless of the
+  configured KeyTransform. The converter restores the documented identity
+  override on the wire. The default fallback (camelCase when no transform is
+  configured) is preserved. The global DictionaryKeyPolicy is unchanged, so
+  every other dictionary in an ApiPilot response keeps camelCasing. 8 new Core
+  serialization tests and 2 previously-red AspNetCore HTTP tests now green.
+
+### Changed
+
+- **The minimal-API convenience overload of WithApiPilotValidation routes
+  through `ValidationKeyTransforms.Resolve`.** The overload previously inlined
+  `options.KeyTransform ?? FieldKeyNormalizer.Normalize`, which is semantically
+  identical to Resolve but duplicated the resolution rule and contradicted
+  the documented single-source-of-truth guarantee in docs/validation.md.
+  This is a consistency cleanup, not a behavior change. No test regression.
+
+### Findings
+
+Test-quality findings from the F-65 regression work:
+
+- The first CSRF Skip resolution test was vacuous: its fake validation service
+  returned success, so the test passed without exercising the bypass path. The
+  corrected test forces a validation failure so pass-through is satisfiable only
+  when the attribute is honored.
+- The first Require-over-Skip precedence test was non-discriminating: global
+  POST protection produced the same 403 result even when endpoint metadata was
+  ignored. The corrected form is a pair: Skip-only passes through (red when the
+  attribute is inert), Skip plus Require enforces (green in both worlds). The
+  pair discriminates.
+
+Process findings:
+
+- A verification line in a write block asserted an expected test count from a
+  design estimate rather than a count of the emitted Test markers. The file
+  was correct; the expectation was wrong. Same class as the recorded count
+  estimate findings.
+- A new test file used an unqualified Results.Ok inside a test namespace that
+  shadows the framework Results class. The build caught it. Same class as the
+  recorded namespace-shadow finding. Fixed by returning a plain value.
+- A verification check for using lines used a dollar-anchored regex that does
+  not match on CRLF line endings. The file was correct; the check was wrong.
+  The reliable form is an exact-line comparison, not a dollar-anchored regex.
+- A write block was declared correct before its own read-back was examined; the
+  read-back showed a layered-escaping defect in a script that would have
+  corrupted a C# file. Corrected by using a verbatim C# string form that removes
+  the escape sequence entirely. Same class as the recorded escape-sequence
+  findings.
+- Interactive PowerShell 5.1 shut down repeatedly on multi-line inline paste
+  blocks containing regex or file-write calls. Every production edit was then
+  delivered as a dot-ps1 script file and run with -File, which eliminated the
+  shutdown. Recorded as the reliable delivery form for edits of this size.
+- An anchor context check for a one-line replacement assumed a two-line options
+  chain; the actual file has a three-line chain ending in a standalone Value
+  expression. The block aborted without writing, the correct behavior. The
+  corrected block matched the actual three-line context.
+
+- **A-275 recurrence (hard-coded version literals).** Four production constants
+  still carry a hard-coded version literal of `"1.0.0"`: `ApiPilotActivitySource.Version`,
+  `ApiPilotOpenApiOptions.DocumentVersion`, the `RateLimitDiagnosticsHook` meter version,
+  and `ApiPilotCsrfCounters.MeterVersion`. The activity source version and both meter
+  versions are observable in telemetry: a 1.0.4 library reports 1.0.0 for every
+  distributed trace and every metric instrument. Deferred to Backfill B.7, which
+  introduces a shared internal `ApiPilotAssemblyInfo` provider that reads the
+  informational version from the library assembly at runtime. Bumping the literals
+  in-phase would move the drift forward without removing the class.
+
+
 ## [1.0.3] - 2026-09-29
 
 ### Fixed
@@ -65,6 +157,12 @@ requires a new version number. Published tags are never force-pushed, deleted, o
   The content ships as `1.0.3`.
 
 ## [1.0.2] - 2026-09-29
+
+> **Note:** the 1.0.2 release workflow failed on a browser test timeout
+> (`BrowserSecurityTests.CsrfToken_NotInLocalStorage` exceeded the 30-second
+> per-test limit). No packages were published under 1.0.2. The tag exists on
+> GitHub; the package version does not exist on nuget.org. The content shipped
+> as 1.0.3.
 
 ### Changed
 

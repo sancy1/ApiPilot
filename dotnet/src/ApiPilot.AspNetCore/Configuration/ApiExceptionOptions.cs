@@ -91,6 +91,8 @@ public sealed class ApiExceptionOptions
     /// prefer a different status for a built-in code, populate this
     /// dictionary. Defaults to an empty dictionary, which means the
     /// built-in mappings are used unchanged.
+    /// The declared type is <c>IReadOnlyDictionary&lt;string, int&gt;</c> with a
+    /// public setter; assign a whole dictionary, do not mutate in place.
     /// </remarks>
     public IReadOnlyDictionary<string, int> ErrorCodeToStatusMap { get; set; } =
         new Dictionary<string, int>(StringComparer.Ordinal);

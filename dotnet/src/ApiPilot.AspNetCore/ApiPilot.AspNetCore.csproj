@@ -11,7 +11,7 @@ purpose:  ASP.NET Core integration for ApiPilot response contracts and browser s
     <RootNamespace>ApiPilot.AspNetCore</RootNamespace>
     <AssemblyName>ApiPilot.AspNetCore</AssemblyName>
     <PackageId>ApiPilot.AspNetCore</PackageId>
-    <Description>ASP.NET Core integration for ApiPilot: response contract middleware, exception mapping, HTTP status mapping, model validation integration, pagination endpoint filters, correlation middleware, and content negotiation.</Description>
+    <Description>ASP.NET Core integration for ApiPilot: response contract middleware, exception mapping, HTTP status mapping, model validation integration, pagination endpoint filters, correlation middleware, and content negotiation. Requires ApiPilot.Core; the security surfaces (CSRF, cookies, Origin, Fetch Metadata) ship as ApiPilot.Security. See the full boundary at https://github.com/sancy1/ApiPilot.</Description>
     <IsPackable>true</IsPackable>
     <IsTestProject>false</IsTestProject>
   </PropertyGroup>

@@ -55,6 +55,7 @@ public sealed class PaginationOptions
     /// sort, direction). Defaults to the ApiPilot convention documented
     /// in SPEC.md. Applications that front different client conventions
     /// assign a custom QueryParameterNames instance here.
+    /// The declared type is <c>QueryParameterNames</c>.
     /// </summary>
     public QueryParameterNames ParameterNames { get; set; } = new();
 
@@ -70,6 +71,7 @@ public sealed class PaginationOptions
     /// SortDirectionExtensions.TryParseWireValue). Applications
     /// whose frontends use other direction tokens (for example,
     /// "ascending" or "+"/"-") supply their own parser here.
+    /// The declared type is <c>Func&lt;string, SortDirection?&gt;?</c>.
     /// </summary>
     public Func<string, SortDirection?>? SortDirectionParser { get; set; }
 
@@ -81,6 +83,7 @@ public sealed class PaginationOptions
     /// parameter. Applications whose frontends encode the direction in
     /// the field (for example, "-createdAt" for descending) supply their
     /// own parser here.
+    /// The declared type is <c>Func&lt;string, string, SortRequest?&gt;?</c>.
     /// </summary>
     public Func<string, string, SortRequest?>? SortParser { get; set; }
 
@@ -90,6 +93,7 @@ public sealed class PaginationOptions
     /// by ParameterNames as a filter in lenient mode, and rejects it
     /// in strict mode. Applications that restrict filter keys to a
     /// known set supply their own predicate here.
+    /// The declared type is <c>Func&lt;string, bool&gt;?</c>.
     /// </summary>
     public Func<string, bool>? IsFilterParameter { get; set; }
 
@@ -98,6 +102,7 @@ public sealed class PaginationOptions
     /// When null, the library uses int.TryParse with NumberStyles.Integer
     /// and the invariant culture. Applications that accept other integer
     /// formats supply their own parser here.
+    /// The declared type is <c>Func&lt;string, int?&gt;?</c>.
     /// </summary>
     public Func<string, int?>? IntegerParser { get; set; }
 }

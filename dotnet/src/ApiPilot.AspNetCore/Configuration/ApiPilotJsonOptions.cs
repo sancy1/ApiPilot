@@ -45,12 +45,14 @@ public sealed class ApiPilotJsonOptions
     /// <summary>
     /// The naming policy for property names. Defaults to camelCase.
     /// Set to null to use PascalCase (the CLR default).
+    /// The declared type is <c>JsonNamingPolicy?</c>.
     /// </summary>
     public JsonNamingPolicy? PropertyNamingPolicy { get; set; } = JsonNamingPolicy.CamelCase;
 
     /// <summary>
     /// The naming policy for dictionary keys. Defaults to camelCase.
     /// Set to null to use the key as written.
+    /// The declared type is <c>JsonNamingPolicy?</c>.
     /// </summary>
     public JsonNamingPolicy? DictionaryKeyPolicy { get; set; } = JsonNamingPolicy.CamelCase;
 
@@ -58,6 +60,7 @@ public sealed class ApiPilotJsonOptions
     /// When to ignore properties during serialization. Defaults to Never,
     /// which writes null values explicitly. This matches the ApiPilot
     /// contract that the data key is never omitted.
+    /// The declared type is <c>JsonIgnoreCondition</c>.
     /// </summary>
     public JsonIgnoreCondition DefaultIgnoreCondition { get; set; } = JsonIgnoreCondition.Never;
 
@@ -70,6 +73,7 @@ public sealed class ApiPilotJsonOptions
     /// <summary>
     /// How JSON comments in incoming input are handled. Defaults to
     /// Disallow for strict input parsing.
+    /// The declared type is <c>JsonCommentHandling</c>.
     /// </summary>
     public JsonCommentHandling ReadCommentHandling { get; set; } = JsonCommentHandling.Disallow;
 

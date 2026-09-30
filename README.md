@@ -10,7 +10,7 @@ purpose:  Project identity, scope, the wire contract, and the documentation map 
 [![ApiPilot.Core](https://img.shields.io/nuget/v/ApiPilot.Core.svg?label=ApiPilot.Core)](https://www.nuget.org/packages/ApiPilot.Core)
 [![ApiPilot.AspNetCore](https://img.shields.io/nuget/v/ApiPilot.AspNetCore.svg?label=ApiPilot.AspNetCore)](https://www.nuget.org/packages/ApiPilot.AspNetCore)
 [![ApiPilot.Security](https://img.shields.io/nuget/v/ApiPilot.Security.svg?label=ApiPilot.Security)](https://www.nuget.org/packages/ApiPilot.Security)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/sancy1/ApiPilot/blob/main/LICENSE)
 [![.NET 10](https://img.shields.io/badge/.NET-10-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Build](https://github.com/sancy1/ApiPilot/actions/workflows/ci.yml/badge.svg)](https://github.com/sancy1/ApiPilot/actions/workflows/ci.yml)
 
@@ -21,7 +21,7 @@ repository-owned OpenAPI emitter, rate-limit integration, diagnostics, and a
 zero-runtime-dependency browser client - in one library with a cross-language
 wire specification.
 
-**Target:** .NET 10 | **License:** MIT | **Runtime dependencies:** none | **Releases:** [github.com/sancy1/ApiPilot/releases](https://github.com/sancy1/ApiPilot/releases)
+**Target:** .NET 10 | **License:** MIT | **Runtime dependencies:** none | **Releases:** [https://github.com/sancy1/ApiPilot/releases](https://github.com/sancy1/ApiPilot/releases)
 
 ---
 
@@ -124,7 +124,7 @@ Every response is a JSON object with a top-level `success` discriminator.
 }
 ```
 
-The full contract is in [SPEC.md](SPEC.md).
+The full contract is in [SPEC.md](https://github.com/sancy1/ApiPilot/blob/main/SPEC.md).
 
 ---
 
@@ -250,36 +250,36 @@ envelope and error contract references `ApiPilot.Core` alone.
 ## Documentation
 
 Each concern has a per-concern document. The full list is in
-[docs/README.md](docs/README.md).
+[docs/README.md](https://github.com/sancy1/ApiPilot/blob/main/docs/README.md).
 
 | Concern | Document |
 | --- | --- |
-| The success / error / paginated envelopes | [docs/response-contract.md](docs/response-contract.md) |
-| The error model and code table | [docs/error-contract.md](docs/error-contract.md) |
-| Validation, field normalization | [docs/validation.md](docs/validation.md) |
-| Pagination and query parameters | [docs/pagination.md](docs/pagination.md) |
-| Filtering and sorting | [docs/filtering-sorting.md](docs/filtering-sorting.md) |
-| JSON policy | [docs/serialization.md](docs/serialization.md) |
-| Content negotiation (406 / 415) | [docs/content-negotiation.md](docs/content-negotiation.md) |
-| Correlation IDs | [docs/correlation.md](docs/correlation.md) |
-| CSRF protection | [docs/csrf.md](docs/csrf.md) |
-| Unsafe-method protection | [docs/unsafe-methods.md](docs/unsafe-methods.md) |
-| Secure cookie profiles | [docs/cookies.md](docs/cookies.md) |
-| Origin policy | [docs/origin-policy.md](docs/origin-policy.md) |
-| Fetch Metadata | [docs/fetch-metadata.md](docs/fetch-metadata.md) |
-| Data Protection and multi-instance | [docs/data-protection.md](docs/data-protection.md), [docs/multi-instance.md](docs/multi-instance.md) |
-| OpenAPI emitter | [docs/openapi.md](docs/openapi.md) |
-| Rate-limit integration | [docs/rate-limiting.md](docs/rate-limiting.md) |
-| Observability | [docs/observability.md](docs/observability.md) |
-| Threat model | [docs/threat-model.md](docs/threat-model.md) |
-| Browser client | [docs/fetch-helper.md](docs/fetch-helper.md) |
-| Supply chain (SBOM, signing, provenance) | [docs/supply-chain.md](docs/supply-chain.md) |
-| Deployment | [docs/deployment.md](docs/deployment.md) |
-| Troubleshooting a 403 | [docs/troubleshooting-403.md](docs/troubleshooting-403.md) |
-| Migration | [docs/migration.md](docs/migration.md) |
-| Resilience companion integration | [docs/resilience-integration.md](docs/resilience-integration.md) |
+| The success / error / paginated envelopes | [docs/response-contract.md](https://github.com/sancy1/ApiPilot/blob/main/docs/response-contract.md) |
+| The error model and code table | [docs/error-contract.md](https://github.com/sancy1/ApiPilot/blob/main/docs/error-contract.md) |
+| Validation, field normalization | [docs/validation.md](https://github.com/sancy1/ApiPilot/blob/main/docs/validation.md) |
+| Pagination and query parameters | [docs/pagination.md](https://github.com/sancy1/ApiPilot/blob/main/docs/pagination.md) |
+| Filtering and sorting | [docs/filtering-sorting.md](https://github.com/sancy1/ApiPilot/blob/main/docs/filtering-sorting.md) |
+| JSON policy | [docs/serialization.md](https://github.com/sancy1/ApiPilot/blob/main/docs/serialization.md) |
+| Content negotiation (406 / 415) | [docs/content-negotiation.md](https://github.com/sancy1/ApiPilot/blob/main/docs/content-negotiation.md) |
+| Correlation IDs | [docs/correlation.md](https://github.com/sancy1/ApiPilot/blob/main/docs/correlation.md) |
+| CSRF protection | [docs/csrf.md](https://github.com/sancy1/ApiPilot/blob/main/docs/csrf.md) |
+| Unsafe-method protection | [docs/unsafe-methods.md](https://github.com/sancy1/ApiPilot/blob/main/docs/unsafe-methods.md) |
+| Secure cookie profiles | [docs/cookies.md](https://github.com/sancy1/ApiPilot/blob/main/docs/cookies.md) |
+| Origin policy | [docs/origin-policy.md](https://github.com/sancy1/ApiPilot/blob/main/docs/origin-policy.md) |
+| Fetch Metadata | [docs/fetch-metadata.md](https://github.com/sancy1/ApiPilot/blob/main/docs/fetch-metadata.md) |
+| Data Protection and multi-instance | [docs/data-protection.md](https://github.com/sancy1/ApiPilot/blob/main/docs/data-protection.md), [docs/multi-instance.md](https://github.com/sancy1/ApiPilot/blob/main/docs/multi-instance.md) |
+| OpenAPI emitter | [docs/openapi.md](https://github.com/sancy1/ApiPilot/blob/main/docs/openapi.md) |
+| Rate-limit integration | [docs/rate-limiting.md](https://github.com/sancy1/ApiPilot/blob/main/docs/rate-limiting.md) |
+| Observability | [docs/observability.md](https://github.com/sancy1/ApiPilot/blob/main/docs/observability.md) |
+| Threat model | [docs/threat-model.md](https://github.com/sancy1/ApiPilot/blob/main/docs/threat-model.md) |
+| Browser client | [docs/fetch-helper.md](https://github.com/sancy1/ApiPilot/blob/main/docs/fetch-helper.md) |
+| Supply chain (SBOM, signing, provenance) | [docs/supply-chain.md](https://github.com/sancy1/ApiPilot/blob/main/docs/supply-chain.md) |
+| Deployment | [docs/deployment.md](https://github.com/sancy1/ApiPilot/blob/main/docs/deployment.md) |
+| Troubleshooting a 403 | [docs/troubleshooting-403.md](https://github.com/sancy1/ApiPilot/blob/main/docs/troubleshooting-403.md) |
+| Migration | [docs/migration.md](https://github.com/sancy1/ApiPilot/blob/main/docs/migration.md) |
+| Resilience companion integration | [docs/resilience-integration.md](https://github.com/sancy1/ApiPilot/blob/main/docs/resilience-integration.md) |
 
-The single normative document is [SPEC.md](SPEC.md).
+The single normative document is [SPEC.md](https://github.com/sancy1/ApiPilot/blob/main/SPEC.md).
 
 ---
 
@@ -680,7 +680,7 @@ ApiPilot is an open-source project. Contributions are welcome.
 - **Tests for every change.** Every new behavior needs a test; every fixed
   defect needs a regression test.
 - **Docs updated in the same PR.** If the change affects the contract,
-  update the relevant file under [docs/](docs/) and [SPEC.md](SPEC.md) in
+  update the relevant file under [docs/](https://github.com/sancy1/ApiPilot/blob/main/docs/) and [SPEC.md](https://github.com/sancy1/ApiPilot/blob/main/SPEC.md) in
   the same commit.
 - **Zero build warnings.** The repository enforces
   `TreatWarningsAsErrors=true`. A PR that introduces a warning will not
@@ -699,7 +699,7 @@ on your branch.
 
 ## License
 
-ApiPilot is licensed under the MIT License. See [LICENSE](LICENSE).
+ApiPilot is licensed under the MIT License. See [LICENSE](https://github.com/sancy1/ApiPilot/blob/main/LICENSE).
 
 ---
 
@@ -722,4 +722,4 @@ For a production case study of the resilience companion, see **File-Ferry**
 filesystem operation.
 
 The full history - every change and every finding, with sequential IDs - is
-in [CHANGELOG.md](CHANGELOG.md).
+in [CHANGELOG.md](https://github.com/sancy1/ApiPilot/blob/main/CHANGELOG.md).

@@ -1,6 +1,6 @@
 {
   "name": "@apipilot/client",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Framework-agnostic, zero-runtime-dependency browser client for the ApiPilot API boundary.",
   "license": "MIT",
   "type": "module",
