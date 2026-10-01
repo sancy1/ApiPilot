@@ -85,6 +85,12 @@ public static class ApiPilotOpenApiExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="endpoints"/> is null.
     /// </exception>
+    /// <remarks>
+    /// Requires an ApiExplorer provider in the container. For minimal APIs,
+    /// call <c>builder.Services.AddEndpointsApiExplorer()</c>. For MVC,
+    /// call <c>builder.Services.AddControllers()</c>. If neither is registered,
+    /// the document endpoint throws at request time.
+    /// </remarks>
     public static IEndpointRouteBuilder MapApiPilotOpenApi(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);

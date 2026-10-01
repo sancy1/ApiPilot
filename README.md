@@ -106,6 +106,25 @@ Every response is a JSON object with a top-level `success` discriminator.
 | Unacceptable Accept | 406 | `NOT_ACCEPTABLE` |
 | Unsupported content type | 415 | `UNSUPPORTED_MEDIA_TYPE` |
 
+### Default exception mapping
+
+When an exception escapes an endpoint protected by `UseApiPilotExceptions`,
+the middleware maps it to an error envelope using the following default
+table, in match order. The first matching entry wins.
+
+| Exception type | error.code | HTTP status |
+| --- | --- | --- |
+| `ArgumentNullException` | `VALIDATION_ERROR` | 400 |
+| `ArgumentException` | `VALIDATION_ERROR` | 400 |
+| `KeyNotFoundException` | `RESOURCE_NOT_FOUND` | 404 |
+| `UnauthorizedAccessException` | `FORBIDDEN` | 403 |
+| `InvalidOperationException` | `CONFLICT` | 409 |
+| any other exception | `INTERNAL_ERROR` | 500 |
+
+Applications can replace or extend the table through
+`ApiExceptionOptions.Mappings`. Applications can override the HTTP status
+produced for any wire code through `ApiExceptionOptions.ErrorCodeToStatusMap`.
+
 ### Paginated collections
 
 ```json

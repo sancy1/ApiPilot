@@ -23,6 +23,50 @@ requires a new version number. Published tags are never force-pushed, deleted, o
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-09-30
+
+### Documentation
+
+- **Default exception mapping table added to the packaged README.** The
+  README documented the wire-condition table (condition to code to HTTP
+  status) but not the CLR exception-to-code mapping. A consumer could not
+  predict which code an escaping exception would produce. The README now
+  carries a "Default exception mapping" table naming the six default entries
+  in match order. Addresses verifier finding **F-30** and **F-31**.
+
+- **Default exception mapping table added to docs/error-contract.md.** The
+  document described the mapping in prose; it now carries an explicit table
+  with the six CLR exception types, their wire codes, and their HTTP
+  statuses. Same class as the README change above.
+
+- **OpenAPI prerequisite documented on `MapApiPilotOpenApi`.** The XML
+  remarks for `MapApiPilotOpenApi` now state that an ApiExplorer provider
+  must be registered (`AddEndpointsApiExplorer` for minimal APIs,
+  `AddControllers` for MVC). Previously the prerequisite was documented only
+  on the containing class, not on the method a consumer reads. Addresses
+  verifier finding **F-75**.
+
+### Reference
+
+This release completes the library-side documentation fixes the consumer
+verification canary (`dotnet/verify/Verify.ApiPilot`) reported. The full
+register of findings is in `dotnet/verify/Verify.ApiPilot/FINDINGS.md`.
+The following verifier findings are addressed across the 1.0.4, 1.0.5, and
+1.0.6 releases:
+
+- **F-14, N-06, N-13** - README links to non-shipped documents. Fixed in 1.0.4.
+- **F-15** - `.nuspec` descriptions narrower than README. Fixed in 1.0.4.
+- **F-30, F-31** - Undocumented default exception mappings. Fixed in 1.0.6.
+- **F-36** - `ErrorCodeToStatusMap` declared type not named. Fixed in 1.0.4.
+- **F-51** - Four `ApiPilotJsonOptions` types not named. Fixed in 1.0.4.
+- **F-58** - Five `PaginationOptions` delegate types not named. Fixed in 1.0.4.
+- **F-59** - KeyTransform identity override ineffective. Fixed in 1.0.4.
+- **F-64** - Two `CsrfOptions` types not named. Fixed in 1.0.4.
+- **F-65** - CSRF attributes ineffective on minimal APIs. Fixed in 1.0.4.
+- **F-75** - OpenAPI ApiExplorer prerequisite undocumented. Fixed in 1.0.6.
+- **N-21, N-24, N-34** - `1.0.2` gap in the version history. Documented in 1.0.4.
+- **N-32** - Releases link missing scheme. Fixed in 1.0.4.
+
 ## [1.0.5] - 2026-09-30
 
 ### Fixed

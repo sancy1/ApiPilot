@@ -163,6 +163,22 @@ If no entry in Mappings matches the exception type, the mapper produces
 INTERNAL_ERROR with a generic safe message. The exception detail is not
 returned to the client. It is logged server-side.
 
+
+### The default CLR exception mapping, in match order
+
+| CLR exception type | Wire code | HTTP status |
+| --- | --- | --- |
+| `ArgumentNullException` | `VALIDATION_ERROR` | 400 |
+| `ArgumentException` | `VALIDATION_ERROR` | 400 |
+| `KeyNotFoundException` | `RESOURCE_NOT_FOUND` | 404 |
+| `UnauthorizedAccessException` | `FORBIDDEN` | 403 |
+| `InvalidOperationException` | `CONFLICT` | 409 |
+| any other exception | `INTERNAL_ERROR` | 500 |
+
+The mapper walks the list top to bottom and matches the first entry whose
+`ExceptionType` is an instance of the thrown exception. `ArgumentNullException`
+is listed before `ArgumentException` because the former derives from the latter.
+
 ## The safe-message discipline
 
 error.message is safe for the client to display. It never contains a
