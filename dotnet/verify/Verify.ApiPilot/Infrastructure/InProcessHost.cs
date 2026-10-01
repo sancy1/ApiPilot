@@ -83,6 +83,11 @@ public sealed class InProcessHost : IAsyncDisposable
     }
 
     /// <summary>
+    /// The host service provider, for scenarios that resolve services after startup.
+    /// </summary>
+    public IServiceProvider Services => _app.Services;
+
+    /// <summary>
     /// Creates an HttpClient configured for this host. The caller owns the client.
     /// </summary>
     public HttpClient CreateClient()

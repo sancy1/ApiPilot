@@ -58,9 +58,9 @@ public static class CsrfProtectionScenario
             await CheckMissingHeaderRejected(failures);
             await CheckInvalidHeaderRejected(failures);
             await CheckSafeMethodPasses(failures);
-            await CheckSkipAttributeBypasses(failures, observations);
-            await CheckRequireAttributeEnforcesOnGet(failures, observations);
-            await CheckPrecedenceChain(failures, observations);
+            await CheckSkipAttributeBypasses(failures);
+            await CheckRequireAttributeEnforcesOnGet(failures);
+            await CheckPrecedenceChain(failures);
             await CheckExemptPathsOverride(failures);
             await CheckHeaderNameOverride(failures);
 
@@ -72,7 +72,7 @@ public static class CsrfProtectionScenario
             var suffix = observations.Count > 0 ? " Observations: " + string.Join("; ", observations) : string.Empty;
             return ScenarioResult.Passed(
                 Name,
-                "UseApiPilotCsrfProtection is public and callable; the middleware rejects a missing header with CSRF_HEADER_MISSING and an invalid header with CSRF_TOKEN_INVALID; safe methods pass the global policy; CsrfOptions.ExemptPaths and CsrfOptions.HeaderName overrides are consumed; the attribute behavior on minimal-API endpoints is observed." + suffix);
+                "UseApiPilotCsrfProtection is public and callable; the middleware rejects a missing header with CSRF_HEADER_MISSING and an invalid header with CSRF_TOKEN_INVALID; safe methods pass the global policy; CsrfOptions.ExemptPaths and CsrfOptions.HeaderName overrides are consumed; the attribute behavior on minimal-API endpoints is honored.");
         }
         catch (Exception ex)
         {
@@ -136,7 +136,7 @@ public static class CsrfProtectionScenario
     // -------------------------------------------------------------------
     // Sub-check 4: [ApiPilotSkipCsrf] on a POST bypasses the middleware
     // -------------------------------------------------------------------
-    private static async Task CheckSkipAttributeBypasses(List<string> failures, List<string> observations)
+    private static async Task CheckSkipAttributeBypasses(List<string> failures)
     {
         await using var host = await InProcessHost.StartAsync(
             configureServices: ConfigureCsrf,
@@ -152,14 +152,15 @@ public static class CsrfProtectionScenario
         using var response = await client.PostAsync(new Uri("/", UriKind.Relative), content);
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            observations.Add("[ApiPilotSkipCsrf] on a POST minimal-API endpoint via .WithMetadata(...) did not bypass the middleware; observed HTTP " + (int)response.StatusCode);
+            var body = await response.Content.ReadAsStringAsync();
+            failures.Add("Skip: expected 200, got " + (int)response.StatusCode + ". Body=" + body);
         }
     }
 
     // -------------------------------------------------------------------
     // Sub-check 5: [ApiPilotRequireCsrf] on a GET enforces protection
     // -------------------------------------------------------------------
-    private static async Task CheckRequireAttributeEnforcesOnGet(List<string> failures, List<string> observations)
+    private static async Task CheckRequireAttributeEnforcesOnGet(List<string> failures)
     {
         await using var host = await InProcessHost.StartAsync(
             configureServices: ConfigureCsrf,
@@ -172,16 +173,19 @@ public static class CsrfProtectionScenario
 
         using var client = host.CreateClient();
         using var response = await client.GetAsync(new Uri("/", UriKind.Relative));
+        var body = await response.Content.ReadAsStringAsync();
         if ((int)response.StatusCode != 403)
         {
-            observations.Add("[ApiPilotRequireCsrf] on a GET minimal-API endpoint via .WithMetadata(...) did not enforce protection; observed HTTP " + (int)response.StatusCode);
+            failures.Add("RequireOnGet: expected 403, got " + (int)response.StatusCode + ". Body=" + body);
+            return;
         }
+        AssertErrorCode(failures, "RequireOnGet", body, "CSRF_HEADER_MISSING");
     }
 
     // -------------------------------------------------------------------
     // Sub-check 6: precedence chain - Require beats Skip
     // -------------------------------------------------------------------
-    private static async Task CheckPrecedenceChain(List<string> failures, List<string> observations)
+    private static async Task CheckPrecedenceChain(List<string> failures)
     {
         await using var host = await InProcessHost.StartAsync(
             configureServices: ConfigureCsrf,
@@ -197,10 +201,13 @@ public static class CsrfProtectionScenario
         using var client = host.CreateClient();
         using var content = new StringContent("{}", System.Text.Encoding.UTF8, "application/json");
         using var response = await client.PostAsync(new Uri("/", UriKind.Relative), content);
+        var body = await response.Content.ReadAsStringAsync();
         if ((int)response.StatusCode != 403)
         {
-            observations.Add("Precedence chain on a minimal-API endpoint: Require did not win over Skip; observed HTTP " + (int)response.StatusCode);
+            failures.Add("Precedence: expected 403 (Require wins), got " + (int)response.StatusCode + ". Body=" + body);
+            return;
         }
+        AssertErrorCode(failures, "Precedence", body, "CSRF_HEADER_MISSING");
     }
 
     // -------------------------------------------------------------------

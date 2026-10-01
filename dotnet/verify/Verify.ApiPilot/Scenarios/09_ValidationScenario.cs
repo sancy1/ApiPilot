@@ -74,7 +74,7 @@ public static class ValidationScenario
             await CheckMvcAttributePath(failures);
             await CheckMvcApiControllerPath(failures);
             await CheckMvcEnvelopeParity(failures);
-            await CheckKeyTransformIdentityOverride(failures, observations);
+            await CheckKeyTransformIdentityOverride(failures);
             await CheckKeyTransformDefaultCamelCase(failures);
 
             if (failures.Count > 0)
@@ -82,10 +82,9 @@ public static class ValidationScenario
                 return ScenarioResult.Failed(Name, string.Join(" | ", failures));
             }
 
-            var suffix = observations.Count > 0 ? " Observations: " + string.Join("; ", observations) : string.Empty;
             return ScenarioResult.Passed(
                 Name,
-                "AddApiPilotValidation and AddApiPilotControllers are public and callable; the minimal API filter and both MVC paths produce the standard VALIDATION_ERROR envelope; the two MVC paths agree on error.code and error.fields; the default camelCase key normalization is on the wire; the KeyTransform identity override is observed." + suffix);
+                "AddApiPilotValidation and AddApiPilotControllers are public and callable; the minimal API filter and both MVC paths produce the standard VALIDATION_ERROR envelope; the two MVC paths agree on error.code and error.fields; the default camelCase key normalization is on the wire; the KeyTransform identity override is honored.");
         }
         catch (Exception ex)
         {
@@ -260,7 +259,7 @@ public static class ValidationScenario
     // -------------------------------------------------------------------
     // Sub-check 7: KeyTransform identity override (observe, do not fail)
     // -------------------------------------------------------------------
-    private static async Task CheckKeyTransformIdentityOverride(List<string> failures, List<string> observations)
+    private static async Task CheckKeyTransformIdentityOverride(List<string> failures)
     {
         await using var host = await InProcessHost.StartAsync(
             configureServices: services =>
@@ -289,12 +288,9 @@ public static class ValidationScenario
             failures.Add("KeyTransformIdentity: expected 400, got " + (int)response.StatusCode + ".");
             return;
         }
-        AssertValidationEnvelopeShape(failures, "KeyTransformIdentity", body);
-        var observedKeys = TryGetErrorFieldKeys(body);
-        if (!observedKeys.Contains("Email", StringComparison.Ordinal))
-        {
-            observations.Add("KeyTransformIdentity: observed error.fields keys '" + observedKeys + "'; the identity transform did not preserve 'Email'");
-        }
+        // F-59 was resolved in 1.0.5. The identity transform now preserves the
+        // raw key on the wire. This sub-check asserts the corrected behavior.
+        AssertValidationEnvelope(failures, "KeyTransformIdentity", body, ExpectedPascalCaseField);
     }
 
     // -------------------------------------------------------------------

@@ -38,37 +38,14 @@ A functional deviation is a case where the shipped artifact's runtime
 behavior contradicts a specific claim in the shipped documentation. It is
 not a documentation gap (the library works but the documentation is
 incomplete), not a packaging gap, and not a positive assertion. It is a
-library problem. The following findings are in this category.
+library problem.
 
-### F-59 - Functional deviation: the KeyTransform identity override is ineffective
+No open functional deviations remain. The two that were found against 1.0.3
+- F-59 and F-65 - are fixed in 1.0.5. Their entries are in the Resolved
+findings section, marked "resolved in 1.0.5". The focused action list is in
+DEVIATIONS.md.
 
-- **Package:** ApiPilot.AspNetCore 1.0.3.
-- **Documented behavior:** The shipped XML for ApiPilotValidationOptions.KeyTransform states, verbatim: "Supply a delegate to replace the normalization entirely; to disable normalization, supply the identity function key => key." The shipped XML for the convenience overload of WithApiPilotValidation states: "The keys are normalized using the KeyTransform configured in ApiPilotValidationOptions, falling back to FieldKeyNormalizer.Normalize when no transform is configured."
-- **Observed behavior:** With ApiPilotValidationOptions.KeyTransform configured to the identity function (key => key) through AddApiPilotValidation, an input field key of "Email" appears on the wire as "email". The identity override is not honored.
-- **Reproduction:** Scenario 09, sub-check 7. Configure o.KeyTransform = key => key. Attach the convenience overload of WithApiPilotValidation. Send a dictionary with the key "Email". Observe the wire: error.fields.email.
-- **Impact:** Medium. A consumer who needs to preserve raw binder keys cannot. The documented escape hatch does not work.
-- **Recommended resolution:** Documentation correction. The current behavior (always normalizing to camelCase) is a defensible library default. The XML overstates what the identity transform achieves. Correct the XML remark to describe the actual behavior. A functional code fix (apply the user transform to the raw key before default normalization) is a larger change and should be treated as a feature request, not a defect fix. See PROPOSED_FIXES.md Proposal 4.
-- **Security relevance:** None.
-- **Performance relevance:** None.
-- **Status:** open.
-- **Blocks adoption:** no.
 
-### F-65 - Functional deviation: the CSRF attributes are ineffective on minimal-API endpoints
-
-- **Package:** ApiPilot.Security 1.0.3.
-- **Documented behavior:** The shipped XML for ApiPilotSkipCsrfAttribute states, verbatim: "Apply to a controller action or pass through WithMetadata on a minimal API endpoint. Use this attribute for endpoints that intentionally accept unauthenticated state-changing requests (for example, a public webhook receiver)." The shipped XML for ApiPilotRequireCsrfAttribute states: "Apply to a controller action or pass through WithMetadata on a minimal API endpoint. Use this attribute for endpoints whose method is safe by HTTP semantics but whose behavior is state-changing or sensitive."
-- **Observed behavior:** On a minimal-API endpoint:
-  - WithMetadata(new ApiPilotSkipCsrfAttribute()) on a POST endpoint does not bypass the global CSRF policy. The request is rejected with HTTP 403 and error.code CSRF_HEADER_MISSING.
-  - WithMetadata(new ApiPilotRequireCsrfAttribute()) on a GET endpoint does not enforce CSRF protection. The request passes through with HTTP 200.
-  - Applying the attributes to a static handler method (the standard ASP.NET Core pattern for IEndpointMetadataProvider attributes) produces the same non-behavior.
-- **Reproduction:** Scenario 11, sub-checks 4, 5, and 6. Two independent host lifetimes. Two different application patterns. Both are inert.
-- **Impact:** High for minimal-API consumers. The Skip attribute is the documented escape hatch for public webhook receivers. A consumer who follows the shipped XML and deploys a webhook will find their webhook rejected with HTTP 403. The Require attribute is the documented escape hatch for sensitive GET endpoints. A consumer who follows the shipped XML and marks a sensitive GET with Require will find their endpoint unprotected, believing it is protected.
-- **Recommended resolution:** Code fix, not documentation correction. The Require direction is a security defect. The Skip direction is an availability defect. See PROPOSED_FIXES.md Proposal 5.
-- **Security relevance:** High.
-- **Performance relevance:** None.
-- **Status:** open.
-- **Blocks adoption:** conditionally. Yes for minimal-API consumers who need either escape hatch.
-- **Scope note:** The controller path for the two attributes was not tested by scenario 11. The finding stands as written for minimal APIs.
 ## Open findings
 
 ### F-14 - SPEC.md is referenced but does not ship inside the package
@@ -178,7 +155,18 @@ library problem. The following findings are in this category.
 
 ---
 
+### F-75 - The XML for AddApiPilotOpenApi does not document the AddEndpointsApiExplorer prerequisite
+
+Observed: scenario 19. A host that registers AddApiPilotOpenApi and MapApiPilotOpenApi but not the framework AddEndpointsApiExplorer (for minimal APIs) or AddControllers (for MVC) produces HTTP 500 on every request to the OpenAPI document path. With AddApiPilotExceptions in the pipeline, the error is mapped to the opaque code CONFLICT (the default mapping for InvalidOperationException). The XML for AddApiPilotOpenApi does not state the prerequisite. A consumer who follows the XML gets a broken endpoint with an uninformative error code. Impact: medium. The fix is a documentation change: the XML for AddApiPilotOpenApi should name the AddEndpointsApiExplorer / AddControllers prerequisite. Status: open.
 ## Resolved findings (positive assertions)
+
+### F-59 - The KeyTransform identity override is honored (resolved in 1.0.5)
+
+Observed: scenario 09, sub-check 7 asserts the identity transform preserves the raw key on the wire. Originally reported as a functional deviation against 1.0.3; fixed in 1.0.5 by a property-scoped ApiErrorFieldsConverter on ApiError.Fields that overrides the global DictionaryKeyPolicy = CamelCase for that property. Status: resolved, positive.
+
+### F-65 - The CSRF attributes work on minimal-API endpoints (resolved in 1.0.5)
+
+Observed: scenario 11, sub-checks 4, 5, and 6 assert [ApiPilotSkipCsrf] and [ApiPilotRequireCsrf] take effect on minimal-API endpoints via .WithMetadata(...). Originally reported as a functional deviation against 1.0.3; fixed in 1.0.5 by CsrfEndpointPolicyResolver, a shared internal resolver that reads both the canonical CsrfEndpointMetadata record and the attribute instances, and applies the documented precedence Require > Skip > UseGlobal. CsrfMiddleware, OriginMiddleware, and FetchMetadataMiddleware all delegate to it. Status: resolved, positive.
 
 ### F-16 - ApiPilot.Core has zero runtime dependencies
 
@@ -371,6 +359,41 @@ Observed: scenario 08, sub-check 10. With global SuccessStatusCode = 206, the re
 ### F-58 - The shipped XML does not name the declared types of the pagination parser delegates
 
 Observed: reading the shipped ApiPilot.Core.xml for PaginationOptions. The XML documents what ParameterNames, SortDirectionParser, SortParser, IsFilterParameter, and IntegerParser do and what their defaults are, but does not name the declared type of any of them. Same class as F-36 and F-51. Impact: low. The properties are settable and their effects are documented; only the type names are omitted. Status: open.
+### F-66 - The CSRF attributes work on controller actions
+
+Observed: scenario 12. [ApiPilotSkipCsrf] on a POST controller action bypasses the middleware (HTTP 200). [ApiPilotRequireCsrf] on a GET controller action enforces protection (HTTP 403, error.code CSRF_HEADER_MISSING). Both attributes on the same action: Require wins. This path was not tested by scenario 11; the 1.0.5 fix covers it and the verifier confirms it. Status: resolved, positive.
+### F-67 - The Origin policy honors the CSRF attributes on minimal-API endpoints
+
+Observed: scenario 13. [ApiPilotSkipCsrf] bypasses the Origin policy on a minimal-API endpoint sent with a hostile Origin header (HTTP 200). [ApiPilotRequireCsrf] enforces it on a GET endpoint sent with a hostile Origin header (HTTP 403, error.code CSRF_ORIGIN_REJECTED). The default AllowMissingOrigin=true permits a request with no Origin header and lets the CSRF middleware produce the rejection. The AllowMissingOrigin=false override rejects the missing header before CSRF runs. Status: resolved, positive.
+### F-68 - The Fetch Metadata middleware honors the Off and Strict profiles
+
+Observed: scenario 14. The Off profile (the default) is inert; a cross-site Sec-Fetch-Site passes the Fetch Metadata middleware and the CSRF middleware rejects with CSRF_HEADER_MISSING. The Strict profile rejects a cross-site Sec-Fetch-Site with FORBIDDEN (HTTP 403). Strict with AllowMissingHeaders=true permits a missing header and lets CSRF reject; Strict with AllowMissingHeaders=false rejects the missing header with FORBIDDEN. Status: resolved, positive.
+### F-69 - AddApiPilotDataProtection and the MultiInstance startup rule are honored
+
+Observed: scenario 15. AddApiPilotDataProtection is public and callable. The single-instance default (MultiInstance=false) starts without key storage. MultiInstance=true without a KeyStorage delegate fails at startup (the host does not start), confirming the documented fail-closed contract. MultiInstance=true with a KeyStorage delegate that persists keys to the file system starts. Two hosts that share an application name and a key ring validate each other CSRF tokens: host A issues a token via its bootstrap endpoint and host B accepts it in a protected POST. Status: resolved, positive.
+### F-70 - The rate-limit rejection handler is honored
+
+Observed: scenario 16. AddApiPilotRateLimitRejection is public and callable. The default rejection produces HTTP 429 with error.code RATE_LIMITED and the standard error envelope. The StatusCode override (503) is consumed. The Message override is consumed. EmitRetryAfter=false suppresses the Retry-After header. An invalid StatusCode (200, outside the documented 400-599 range) fails the host at startup, confirming the fail-closed validator. Status: resolved, positive.
+### F-71 - The cookie profile validator is honored
+
+Observed: scenario 17. AddApiPilotCookies is public and callable. The default profiles (Authentication, Session, CSRF) start the host. The startup validator fails the host for SameSite=None without Secure, for __Host- with a non-root Path, and for an invalid NamePrefix. The validator passes for __Host- with Secure, no Domain, and Path=/. The library never sets a cookie; it validates the profiles the application applies. Status: resolved, positive.
+### F-72 - The security diagnostics surface is strict-composition and reports SECW001
+
+Observed: scenario 18. AddApiPilotSecurityDiagnostics is a strict-composition extension: it requires all five security validators (CsrfOptions, CookieProfileOptions, OriginPolicyOptions, FetchMetadataOptions, ApiPilotDataProtectionOptions) to be registered. When the composition is complete, the diagnostics service resolves and GetDiagnostics returns the SECW001 in-memory-key-ring warning by default. The warning is suppressed when MultiInstance=true with KeyStorage. ApiPilotLogEvents exposes at least 18 distinct non-zero constants. Status: resolved, positive.
+
+### F-73 - The fail-closed startup failures throw OptionsValidationException
+
+Observed: scenarios 15, 16, and 17. Every documented fail-closed startup failure throws Microsoft.Extensions.Options.OptionsValidationException. Confirmed at runtime for MultiInstance=true without KeyStorage (scenario 15), for an invalid RateLimit StatusCode (scenario 16), and for SameSite=None without Secure, __Host- with a non-root Path, and an invalid NamePrefix (scenario 17). The shipped XML did not name the exception type; the verifier observed it. Status: resolved, positive.
+
+### F-74 - The default RATE_LIMITED message string is "Too many requests. Retry later."
+
+Observed: scenario 16. The default error.message for a rate-limit rejection is the exact string "Too many requests. Retry later.". The shipped XML did not name the exact string; the verifier observed it. Status: resolved, positive.
+### F-76 - The OpenAPI emitter is public and callable
+
+Observed: scenario 19 (with AddEndpointsApiExplorer registered). The document is served at the default path /openapi/v1.json with the documented defaults (openapi 3.0.x, info.title ApiPilot API, info.version 1.0.0). The DocumentPath, DocumentTitle, DocumentVersion, and IncludeErrorSchemas overrides are consumed. The three error schemas (ApiPilotErrorResponse, ApiPilotError, ApiPilotErrorFields) are present by default; IncludeErrorSchemas=false omits them. An invalid DocumentPath fails the host at startup. Status: resolved, positive.
+### F-77 - Sort and filter parsing are honored
+
+Observed: scenario 20. Sort parsing for ?sort=name&direction=asc produces a SortRequest with the field and ascending direction; ?sort=name&direction=desc produces a descending SortRequest. Filter parsing in lenient mode produces a FilterRequest with the passed-through pair (status -> active). StrictQueryValidation=true rejects an unknown query parameter with VALIDATION_ERROR (HTTP 400). The default lenient mode passes it through (HTTP 200). Status: resolved, positive.
 ## Withdrawn findings
 
 ### F-13 - Withdrawn

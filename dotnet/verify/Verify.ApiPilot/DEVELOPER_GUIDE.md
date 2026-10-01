@@ -379,6 +379,18 @@ claims it should, check whether the attribute's own documentation claims
 WithMetadata support. If it does, and the runtime does not honor it, the
 finding is real. Do not assume the scenario is wrong.
 
+
+Note: the general mechanism above is permanent. The specific CSRF
+attribute issue that first exposed it - finding F-65 against 1.0.3 - was
+fixed in 1.0.5. The library introduced CsrfEndpointPolicyResolver, a
+shared internal resolver that reads both the canonical CsrfEndpointMetadata
+record and the attribute instances, and applies the documented precedence
+Require > Skip > UseGlobal. The lesson in this trap remains: a scenario
+that encounters an inert IEndpointMetadataProvider attribute should first
+check whether the framework is invoking PopulateMetadata before assuming
+the scenario code is wrong. See PROPOSED_FIXES.md Proposal 5 and
+DEVIATIONS.md entry F-65.
+
 ### Trap 14 - a .NET exception does not stop the script; the stale variable survives
 
 `$ErrorActionPreference = 'Stop'` stops the script on a PowerShell cmdlet
@@ -428,6 +440,27 @@ removal boundary. Print the last few lines of the block, the blank line if
 any, and the first line of the next content. Then build the anchor from what
 you see, not from what you remember writing.
 
+### Trap 16 - before writing a multi-line anchor, check the file line endings
+
+A PowerShell script that builds a multi-line anchor with CRLF (`r`n) will
+never match a file that uses LF-only line endings. The FINDINGS.md,
+DEVIATIONS.md, PROPOSED_FIXES.md, and HANDOFF.md files in this repository
+use LF-only. README.md has mixed line endings.
+
+The check, before any multi-line write:
+
+    $text = [System.IO.File]::ReadAllText($path)
+    $crlf = ([regex]::Matches($text, "`r`n")).Count
+    $lf   = ([regex]::Matches($text, "`n")).Count
+
+If CRLF count is 0, the file is LF-only: use `n in anchors. If CRLF count
+equals LF count, the file is CRLF: use `r`n. If mixed, prefer single-line
+anchors or regex patterns that match `r?`n.
+
+The DEVIATIONS.md, FINDINGS.md, and HANDOFF.md updates in this session
+failed once or more because of this exact issue. The failure is always
+"anchor not found" with no other diagnostic. The fix is the check above,
+run before the anchor is built.
 ---
 
 ## 7. Writing files - the discipline

@@ -47,14 +47,22 @@ Every entry names the corresponding proposal in PROPOSED_FIXES.md.
 
 | ID | Package | Severity | Category | Status |
 |----|---------|----------|----------|--------|
-| F-59 | ApiPilot.AspNetCore 1.0.3 | Medium | Logic defect | open |
-| F-65 | ApiPilot.Security 1.0.3 | High | Security defect | open |
+| F-59 | ApiPilot.AspNetCore | Medium | Logic defect | resolved in 1.0.5 |
+| F-65 | ApiPilot.Security | High | Security defect | resolved in 1.0.5 |
 
-Two deviations. Both are library problems. Neither is a verifier bug.
+Two deviations. Both were library problems. Neither was a verifier bug.
+Both are resolved in 1.0.5. The re-run of the verifier against 1.0.5
+confirms the fixes.
 
 ---
 
-## F-59 - The KeyTransform identity override is ineffective
+## Resolved deviations
+
+The two deviations below were found against 1.0.3 and fixed in 1.0.5. The
+re-run of the verifier against 1.0.5 confirms both fixes. The entries are
+kept here as a record of what was found and what was fixed.
+
+### F-59 - The KeyTransform identity override is ineffective (resolved in 1.0.5)
 
 **Package:** ApiPilot.AspNetCore 1.0.3.
 
@@ -106,13 +114,19 @@ way.
 
 **Full evidence:** FINDINGS.md section "Functional deviations", entry F-59.
 
-**Status:** open.
+**Status:** resolved in 1.0.5.
+
+**Resolution:** A property-scoped ApiErrorFieldsConverter on ApiError.Fields
+writes and reads dictionary keys verbatim, overriding the global
+DictionaryKeyPolicy = CamelCase for that property only. The default fallback
+is preserved: with no KeyTransform configured, FieldKeyNormalizer.Normalize
+still produces email.
 
 **Blocks adoption:** no.
 
 ---
 
-## F-65 - The CSRF attributes are ineffective on minimal-API endpoints
+### F-65 - The CSRF attributes are ineffective on minimal-API endpoints (resolved in 1.0.5)
 
 **Package:** ApiPilot.Security 1.0.3.
 
@@ -191,7 +205,14 @@ endpoint-metadata lookup per request.
 scenario 11. The finding stands as written for minimal APIs. Testing the
 controller path is a follow-up.
 
-**Status:** open.
+**Status:** resolved in 1.0.5.
+
+**Resolution:** A shared internal resolver, CsrfEndpointPolicyResolver, reads
+both the canonical CsrfEndpointMetadata record and the attribute instances,
+aggregates them, and applies the documented precedence Require > Skip >
+UseGlobal. CsrfMiddleware, OriginMiddleware, and FetchMetadataMiddleware all
+delegate to it. The canonical policy model is unchanged; no public API
+changed; direct-record behavior is preserved.
 
 **Blocks adoption:** conditionally. Yes for minimal-API consumers who need
 either escape hatch.

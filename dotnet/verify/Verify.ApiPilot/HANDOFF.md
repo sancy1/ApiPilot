@@ -11,7 +11,7 @@ relates:  Companion to README.md (project document), FINDINGS.md (findings
           PROPOSED_FIXES.md (proposed fixes).
 -->
 
-# Handoff - Verify.ApiPilot, Milestone M-11
+# Handoff - Verify.ApiPilot, Milestone M-12
 
 This is the handoff note for the library author. It summarizes what the
 verifier is, what it has proven, what it has found, and how to act on the
@@ -34,14 +34,33 @@ It is not a Sample, Demo, Playground, or Example. It is a permanent canary.
 
 | Field | Value |
 |---|---|
-| Published packages under test | ApiPilot.Core 1.0.3, ApiPilot.AspNetCore 1.0.3, ApiPilot.Security 1.0.3 |
-| Scenarios | 11 |
+| Published packages under test | ApiPilot.Core 1.0.5, ApiPilot.AspNetCore 1.0.5, ApiPilot.Security 1.0.5 |
+| Scenarios | 20 |
 | Passed | 11 |
 | Failed | 0 |
 | Exit code | 0 |
 | Verifier source | 14 C# files, approximately 12,000 lines |
 | Cold run duration | under 15 seconds |
 | Warm run duration | under 5 seconds |
+
+## Post-1.0.5 status
+
+The two functional deviations reported against 1.0.3 are resolved in 1.0.5,
+now published on NuGet. The verifier has been re-pinned to [1.0.5] and the
+two scenarios that reported the deviations now assert the corrected
+behavior and pass:
+
+- F-59 - the KeyTransform identity override now preserves the raw key on
+  the wire. Scenario 09, sub-check 7 asserts the corrected behavior.
+- F-65 - the CSRF attributes now take effect on minimal-API endpoints. The
+  library introduced CsrfEndpointPolicyResolver, which reads both the
+  canonical CsrfEndpointMetadata record and the attribute instances, and
+  applies the documented precedence Require > Skip > UseGlobal. Scenario
+  11, sub-checks 4, 5, and 6 assert the corrected behavior.
+
+Both findings are recorded as resolved in FINDINGS.md and DEVIATIONS.md.
+The focused action list in DEVIATIONS.md shows them under
+"Resolved deviations".
 
 ## Documents in this folder
 
@@ -53,7 +72,7 @@ It is not a Sample, Demo, Playground, or Example. It is a permanent canary.
 | PROPOSED_FIXES.md | Five concrete fix proposals, one or more per open finding. |
 | HANDOFF.md | This file. |
 | Infrastructure/ | The scenario runner, renderer, and in-process host. |
-| Scenarios/ | The eleven scenarios, one file per capability. |
+| Scenarios/ | The twenty scenarios, one file per capability. |
 
 ## What the verifier proves today
 
@@ -62,7 +81,7 @@ success envelope, and the error envelope all serialize to the documented
 wire shape and round-trip through real consumer code. Zero runtime
 dependencies confirmed from the restored nuspec.
 
-**ApiPilot.AspNetCore (6 scenarios):** correlation middleware end-to-end
+**ApiPilot.AspNetCore (8 scenarios):** correlation middleware end-to-end
 over a real Kestrel host; exception mapping with the documented mappings
 and the status-code override; content negotiation with the 406 and 415
 paths and three documented overrides; JSON serialization with four
@@ -70,7 +89,7 @@ documented defaults and three documented overrides; pagination with the
 three-layer precedence chain; validation with the minimal API filter and
 both MVC paths producing identical envelopes.
 
-**ApiPilot.Security (2 scenarios):** the CSRF bootstrap endpoint returns
+**ApiPilot.Security (8 scenarios):** the CSRF bootstrap endpoint returns
 the documented bare { "token": "..." } shape with Cache-Control no-store;
 the CSRF protection middleware rejects missing and invalid headers with
 the documented codes; safe methods pass; ExemptPaths and HeaderName
@@ -173,9 +192,9 @@ semver dictates.
 
 The verifier's csproj has a pinned PackageReference:
 
-    <PackageReference Include="ApiPilot.Core"       Version="[1.0.3]" />
-    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.3]" />
-    <PackageReference Include="ApiPilot.Security"   Version="[1.0.3]" />
+    <PackageReference Include="ApiPilot.Core"       Version="[1.0.5]" />
+    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.5]" />
+    <PackageReference Include="ApiPilot.Security"   Version="[1.0.5]" />
 
 To test the new version, edit those three version strings in
 Verify.ApiPilot.csproj to the new pinned version, run the verifier, and
@@ -225,7 +244,7 @@ Both traps are in the guide so the next developer does not repeat them.
 
 Once the library author has addressed the five proposals and published a
 new version, the verifier's confirmed fixes become part of the register.
-The verifier then resumes extending coverage with scenario 12 (Origin
+The verifier then resumes extending coverage with scenario 13 (Origin
 policy), 13 (Fetch Metadata), 14 (Data Protection), 15 (multi-instance),
 and so on, until the entire documented surface is exercised.
 

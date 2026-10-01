@@ -207,8 +207,12 @@ name.
 documentation did not name the types.
 ---
 
-## Proposal 4 - Correct the documentation for the KeyTransform identity override
+## Proposal 4 - Correct the documentation for the KeyTransform identity override (applied in 1.0.5)
 
+Status: applied in 1.0.5. The library fixed the deviation at the JSON
+serializer level with a property-scoped ApiErrorFieldsConverter on
+ApiError.Fields. The verifier scenario 09 sub-check 7 now asserts the
+corrected behavior and passes against 1.0.5.
 **Finding:** F-59.
 
 **Classification:** Functional deviation. The runtime behavior contradicts a
@@ -253,8 +257,15 @@ non-behavior as an observation.
 
 ---
 
-## Proposal 5 - Fix the CSRF attributes on minimal-API endpoints
+## Proposal 5 - Fix the CSRF attributes on minimal-API endpoints (applied in 1.0.5)
 
+Status: applied in 1.0.5. The library introduced CsrfEndpointPolicyResolver,
+a shared internal resolver that reads both the canonical
+CsrfEndpointMetadata record and the attribute instances, and applies the
+documented precedence Require > Skip > UseGlobal. CsrfMiddleware,
+OriginMiddleware, and FetchMetadataMiddleware all delegate to it. The
+verifier scenario 11 sub-checks 4, 5, and 6 now assert the corrected
+behavior and pass against 1.0.5.
 **Finding:** F-65.
 
 **Classification:** Functional deviation with security relevance. The

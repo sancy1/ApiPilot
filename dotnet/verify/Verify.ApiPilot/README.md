@@ -21,7 +21,7 @@ artifact drifts from its documentation or from its own runtime behavior.
 
 This is not a Sample, Demo, Playground, or Example. It is a canary.
 
-Current baseline: 11 scenarios, all passing against ApiPilot packages 1.0.3.
+Current baseline: 20 scenarios, all passing against ApiPilot packages 1.0.5.
 
 ---
 
@@ -91,7 +91,7 @@ To verify that the run is using the restored package assets:
     dotnet build   .\dotnet\verify\Verify.ApiPilot\Verify.ApiPilot.csproj -c Release
     dotnet run --project .\dotnet\verify\Verify.ApiPilot -c Release --no-build
 
-The banner must report exactly 1.0.3 for all three ApiPilot packages.
+The banner must report exactly 1.0.5 for all three ApiPilot packages.
 
 ---
 
@@ -99,9 +99,9 @@ The banner must report exactly 1.0.3 for all three ApiPilot packages.
 
 Pinned mode. The verifier certifies exactly one published version.
 
-    <PackageReference Include="ApiPilot.Core"       Version="[1.0.3]" />
-    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.3]" />
-    <PackageReference Include="ApiPilot.Security"   Version="[1.0.3]" />
+    <PackageReference Include="ApiPilot.Core"       Version="[1.0.5]" />
+    <PackageReference Include="ApiPilot.AspNetCore" Version="[1.0.5]" />
+    <PackageReference Include="ApiPilot.Security"   Version="[1.0.5]" />
 
 Advancing the tested version is a deliberate edit by a human. It is never an
 automatic range resolution. A compatibility range such as [1.0.3,2.0.0) is
@@ -128,9 +128,9 @@ resolved versions are what the verifier actually tests.
 
 Expected for the current commit:
 
-    ApiPilot.AspNetCore -> 1.0.3
-    ApiPilot.Core       -> 1.0.3
-    ApiPilot.Security   -> 1.0.3
+    ApiPilot.AspNetCore -> 1.0.5
+    ApiPilot.Core       -> 1.0.5
+    ApiPilot.Security   -> 1.0.5
 
 ---
 
@@ -153,6 +153,15 @@ scenario returns exactly one ScenarioResult: Passed, Failed, or Unavailable.
 | 09 | Validation          | ApiPilot.AspNetCore  | The minimal API validation filter and both MVC paths (attribute and [ApiController]) produce the standard VALIDATION_ERROR envelope; the two MVC paths agree on error.code and error.fields; the default camelCase KeyTransform is on the wire; the KeyTransform identity override is observed but not honored (F-59). | PASS |
 | 10 | CsrfBootstrap       | ApiPilot.Security    | The CSRF bootstrap endpoint returns the documented bare { "token": "..." } shape (one property, non-empty string, no envelope wrappers) with Cache-Control no-store. The CsrfBootstrapOptions.Enabled=false override suppresses the endpoint. The CsrfOptions.BootstrapPath override is consumed. | PASS |
 | 11 | CsrfProtection      | ApiPilot.Security    | The CSRF middleware rejects a missing header with CSRF_HEADER_MISSING and an invalid header with CSRF_TOKEN_INVALID, both at HTTP 403. Safe methods pass the global policy. CsrfOptions.ExemptPaths and CsrfOptions.HeaderName overrides are consumed. The [ApiPilotSkipCsrf] and [ApiPilotRequireCsrf] attributes on minimal-API endpoints are observed but not honored (F-65). | PASS |
+| 12 | CsrfAttributesOnControllers | ApiPilot.Security | The [ApiPilotSkipCsrf] and [ApiPilotRequireCsrf] attributes work on controller actions. Skip bypasses the middleware on a POST; Require enforces protection on a GET; the precedence chain holds when both are applied (Require wins). | PASS |
+| 13 | OriginPolicyAttributes | ApiPilot.Security | The Origin policy middleware honours [ApiPilotSkipCsrf] and [ApiPilotRequireCsrf] on minimal-API endpoints. The default AllowMissingOrigin=true permits a request with no Origin header and lets the CSRF middleware produce the rejection. The AllowMissingOrigin=false override rejects the missing header with CSRF_ORIGIN_REJECTED. | PASS |
+| 14 | FetchMetadataAttributes | ApiPilot.Security | The Fetch Metadata Off profile (the default) is inert. The Strict profile rejects a cross-site Sec-Fetch-Site with FORBIDDEN. Strict with AllowMissingHeaders=true permits a missing header and lets CSRF reject; Strict with AllowMissingHeaders=false rejects with FORBIDDEN. | PASS |
+| 15 | DataProtectionAndMultiInstance | ApiPilot.Security | AddApiPilotDataProtection augments the app Data Protection config. The single-instance default starts. MultiInstance=true without KeyStorage fails at startup (fail-closed). MultiInstance=true with KeyStorage starts. Two hosts sharing a key ring validate each other CSRF tokens. | PASS |
+| 16 | RateLimitRejection | ApiPilot.AspNetCore | The default rejection produces HTTP 429 with error.code RATE_LIMITED and the standard envelope. The StatusCode, Message, and EmitRetryAfter overrides are consumed. An invalid StatusCode (outside 400-599) fails the host at startup (fail-closed). | PASS |
+| 17 | CookieProfiles | ApiPilot.Security | AddApiPilotCookies registers the profile validator. The default profiles start the host. SameSite=None without Secure fails at startup. __Host- with a non-root Path fails. __Host- with Secure, no Domain, and Path=/ passes. An invalid NamePrefix fails. | PASS |
+| 18 | Diagnostics | ApiPilot.Security | AddApiPilotSecurityDiagnostics is strict-composition: it requires all five security validators. When complete, the service resolves. GetDiagnostics returns SECW001 (in-memory key ring) by default; MultiInstance=true with KeyStorage suppresses it. ApiPilotLogEvents exposes at least 18 distinct non-zero constants. | PASS |
+| 19 | OpenApi | ApiPilot.AspNetCore | The repository-owned OpenAPI 3.0.x emitter. The document is served at the default path with the documented defaults. DocumentPath, DocumentTitle, DocumentVersion, and IncludeErrorSchemas overrides are consumed. The three error schemas are present by default. An invalid DocumentPath fails the host at startup. Requires AddEndpointsApiExplorer in the host (F-75). | PASS |
+| 20 | PaginationSortFilter | Core + AspNetCore | Sort parsing for asc and desc produces the documented SortRequest. Filter parsing in lenient mode produces the FilterRequest with the passed-through pair. StrictQueryValidation=true rejects unknown query parameters with VALIDATION_ERROR (HTTP 400). The default lenient mode passes them through. | PASS |
 
 ---
 
@@ -163,9 +172,9 @@ scenario returns exactly one ScenarioResult: Passed, Failed, or Unavailable.
       Verify.ApiPilot
     ================================================================================
       Resolved package versions:
-        ApiPilot.AspNetCore -> 1.0.3
-        ApiPilot.Core -> 1.0.3
-        ApiPilot.Security -> 1.0.3
+        ApiPilot.AspNetCore -> 1.0.5
+        ApiPilot.Core -> 1.0.5
+        ApiPilot.Security -> 1.0.5
     ================================================================================
 
     [PASS] 01 - 01_CoreEnvelopeSuccess
@@ -179,15 +188,25 @@ scenario returns exactly one ScenarioResult: Passed, Failed, or Unavailable.
     [PASS] 09 - 09_Validation
     [PASS] 10 - 10_CsrfBootstrap
     [PASS] 11 - 11_CsrfProtection
+    [PASS] 12 - 12_CsrfAttributesOnControllers
+    [PASS] 13 - 13_OriginPolicyAttributes
+    [PASS] 14 - 14_FetchMetadataAttributes
+    [PASS] 15 - 15_DataProtectionAndMultiInstance
+    [PASS] 16 - 16_RateLimitRejection
+    [PASS] 17 - 17_CookieProfiles
+    [PASS] 18 - 18_Diagnostics
+    [PASS] 19 - 19_OpenApi
+    [PASS] 20 - 20_PaginationSortFilter
 
     Summary:
-      Passed:      11
+      Passed:      20
       Failed:      0
       Unavailable: 0
-      Total:       11
+      Total:       20
     Exit: 0
 
 ---
+
 ## Exit codes
 
 | Code | Meaning |

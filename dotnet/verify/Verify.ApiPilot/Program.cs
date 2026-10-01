@@ -62,6 +62,15 @@ var results = new List<ScenarioResult>
     await ValidationScenario.RunAsync(),
     await CsrfBootstrapScenario.RunAsync(),
     await CsrfProtectionScenario.RunAsync(),
+    await CsrfAttributesOnControllersScenario.RunAsync(),
+    await OriginPolicyAttributesScenario.RunAsync(),
+    await FetchMetadataAttributesScenario.RunAsync(),
+    await DataProtectionAndMultiInstanceScenario.RunAsync(),
+    await RateLimitRejectionScenario.RunAsync(),
+    await CookieProfilesScenario.RunAsync(),
+    await DiagnosticsScenario.RunAsync(),
+    await OpenApiScenario.RunAsync(),
+    await PaginationSortFilterScenario.RunAsync(),
 };
 
 var index = 0;
