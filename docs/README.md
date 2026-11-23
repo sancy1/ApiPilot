@@ -23,6 +23,15 @@ root files: `SPEC.md` (wire-format contract), `PLANNING.md` (phase plan),
 
 ## Documentation index
 
+### API inventory (port parity)
+
+| Document | Status | Phase |
+| --- | --- | --- |
+| `api-inventory/README.md` | Shipped | 1.0.6 |
+
+Machine-generated inventory of every public type and member in the three
+NuGet packages — the parity checklist for language ports.
+
 ### Contracts and responses
 
 | Document | Status | Phase |
