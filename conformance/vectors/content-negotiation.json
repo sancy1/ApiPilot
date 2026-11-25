@@ -1,0 +1,84 @@
+{
+  "category": "content-negotiation",
+  "spec": "docs/content-negotiation.md#the-accept-header-check",
+  "vectors": [
+    {
+      "id": "cn.accept.missing",
+      "description": "Missing Accept header is accepted per RFC 9110",
+      "input": { "accept": null, "contentType": null, "method": "GET", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "skip", "status": 200 }
+    },
+    {
+      "id": "cn.accept.json",
+      "description": "Accept: application/json is accepted",
+      "input": { "accept": "application/json", "contentType": null, "method": "GET", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "skip", "status": 200 }
+    },
+    {
+      "id": "cn.accept.wildcard",
+      "description": "Accept: */* is accepted when AcceptWildcard is true",
+      "input": { "accept": "*/*", "contentType": null, "method": "GET", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "skip", "status": 200 }
+    },
+    {
+      "id": "cn.accept.wildcard-disabled",
+      "description": "Accept: */* is rejected when AcceptWildcard is false",
+      "input": { "accept": "*/*", "contentType": null, "method": "GET", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": false, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "reject", "contentTypeResult": "skip", "status": 406 }
+    },
+    {
+      "id": "cn.accept.type-wildcard-not-honored",
+      "description": "Accept: application/* is NOT honored as a wildcard; literal match only",
+      "input": { "accept": "application/*", "contentType": null, "method": "GET", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "reject", "contentTypeResult": "skip", "status": 406 }
+    },
+    {
+      "id": "cn.accept.q-value-ignored",
+      "description": "q= weight parameters are ignored; presence is what matters",
+      "input": { "accept": "text/html;q=0.9, application/json;q=0.1", "contentType": null, "method": "GET", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "skip", "status": 200 }
+    },
+    {
+      "id": "cn.accept.unacceptable",
+      "description": "Accept with no matching media type rejects with 406",
+      "input": { "accept": "text/html", "contentType": null, "method": "GET", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "reject", "contentTypeResult": "skip", "status": 406 }
+    },
+    {
+      "id": "cn.contenttype.post-json",
+      "description": "POST with Content-Type: application/json is accepted",
+      "input": { "accept": null, "contentType": "application/json", "method": "POST", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "accept", "status": 200 }
+    },
+    {
+      "id": "cn.contenttype.post-missing",
+      "description": "POST with missing Content-Type rejects with 415 by default",
+      "input": { "accept": null, "contentType": null, "method": "POST", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "reject", "status": 415 }
+    },
+    {
+      "id": "cn.contenttype.post-missing-allowed",
+      "description": "POST with missing Content-Type is accepted when AcceptMissingContentType is true",
+      "input": { "accept": null, "contentType": null, "method": "POST", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": true, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "accept", "status": 200 }
+    },
+    {
+      "id": "cn.contenttype.get-skipped",
+      "description": "GET never triggers the Content-Type check",
+      "input": { "accept": null, "contentType": null, "method": "GET", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "skip", "status": 200 }
+    },
+    {
+      "id": "cn.contenttype.charset-ignored",
+      "description": "Content-Type parameters like charset are ignored",
+      "input": { "accept": null, "contentType": "application/json; charset=utf-8", "method": "POST", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "accept", "status": 200 }
+    },
+    {
+      "id": "cn.contenttype.unsupported",
+      "description": "POST with text/plain Content-Type rejects with 415",
+      "input": { "accept": null, "contentType": "text/plain", "method": "POST", "options": { "acceptableResponseMediaTypes": ["application/json"], "acceptWildcard": true, "acceptableRequestMediaTypes": ["application/json"], "acceptMissingContentType": false, "bodyCarryingMethods": ["POST","PUT","PATCH"] } },
+      "expect": { "acceptResult": "accept", "contentTypeResult": "reject", "status": 415 }
+    }
+  ]
+}

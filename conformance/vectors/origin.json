@@ -1,0 +1,84 @@
+{
+  "category": "origin",
+  "spec": "docs/origin-policy.md#the-origin-comparison",
+  "vectors": [
+    {
+      "id": "origin.parse.https-default-port",
+      "description": "https origin with no port normalizes to port 443",
+      "input": { "origin": "https://example.com", "candidate": "https://example.com:443", "mode": "exact" },
+      "expect": { "parseOk": true, "parts": { "scheme": "https", "host": "example.com", "port": 443 }, "match": true }
+    },
+    {
+      "id": "origin.parse.http-default-port",
+      "description": "http origin with no port normalizes to port 80",
+      "input": { "origin": "http://example.com", "candidate": "http://example.com:80", "mode": "exact" },
+      "expect": { "parseOk": true, "parts": { "scheme": "http", "host": "example.com", "port": 80 }, "match": true }
+    },
+    {
+      "id": "origin.parse.wss-default-port",
+      "description": "wss origin with no port normalizes to port 443",
+      "input": { "origin": "wss://example.com", "candidate": "wss://example.com:443", "mode": "exact" },
+      "expect": { "parseOk": true, "parts": { "scheme": "wss", "host": "example.com", "port": 443 }, "match": true }
+    },
+    {
+      "id": "origin.parse.unknown-scheme-port-zero",
+      "description": "A scheme with no default port normalizes to port 0",
+      "input": { "origin": "ftp://example.com", "candidate": "ftp://example.com", "mode": "exact" },
+      "expect": { "parseOk": true, "parts": { "scheme": "ftp", "host": "example.com", "port": 0 }, "match": true }
+    },
+    {
+      "id": "origin.parse.case-normalized",
+      "description": "Scheme and host are lowercased before comparison",
+      "input": { "origin": "HTTPS://EXAMPLE.COM", "candidate": "https://example.com", "mode": "exact" },
+      "expect": { "parseOk": true, "parts": { "scheme": "https", "host": "example.com", "port": 443 }, "match": true }
+    },
+    {
+      "id": "origin.parse.explicit-port-differs",
+      "description": "Different explicit ports do not match in Exact mode",
+      "input": { "origin": "https://example.com:8443", "candidate": "https://example.com:443", "mode": "exact" },
+      "expect": { "parseOk": true, "parts": { "scheme": "https", "host": "example.com", "port": 8443 }, "match": false }
+    },
+    {
+      "id": "origin.parse.anyport-samehost",
+      "description": "AnyPortSameHost ignores the port but requires scheme+host",
+      "input": { "origin": "https://example.com:8443", "candidate": "https://example.com:443", "mode": "anyPortSameHost" },
+      "expect": { "parseOk": true, "parts": { "scheme": "https", "host": "example.com", "port": 8443 }, "match": true }
+    },
+    {
+      "id": "origin.parse.anyport-different-scheme",
+      "description": "AnyPortSameHost still requires the same scheme",
+      "input": { "origin": "http://example.com:8080", "candidate": "https://example.com:443", "mode": "anyPortSameHost" },
+      "expect": { "parseOk": true, "parts": { "scheme": "http", "host": "example.com", "port": 8080 }, "match": false }
+    },
+    {
+      "id": "origin.parse.malformed",
+      "description": "A malformed origin fails to parse and never matches",
+      "input": { "origin": "not a url", "candidate": "https://example.com", "mode": "exact" },
+      "expect": { "parseOk": false, "parts": null, "match": false }
+    },
+    {
+      "id": "origin.parse.null-literal",
+      "description": "The literal origin 'null' sent by sandboxed iframes is rejected",
+      "input": { "origin": "null", "candidate": "https://example.com", "mode": "exact" },
+      "expect": { "parseOk": false, "parts": null, "match": false }
+    },
+    {
+      "id": "origin.parse.path-rejected",
+      "description": "An origin carrying a path is rejected",
+      "input": { "origin": "https://example.com/foo", "candidate": "https://example.com", "mode": "exact" },
+      "expect": { "parseOk": false, "parts": null, "match": false }
+    },
+    {
+      "id": "origin.parse.query-rejected",
+      "description": "An origin carrying a query string is rejected",
+      "input": { "origin": "https://example.com?x=1", "candidate": "https://example.com", "mode": "exact" },
+      "expect": { "parseOk": false, "parts": null, "match": false }
+    },
+    {
+      "id": "origin.parse.sameSite-never-matches",
+      "description": "SameSite mode is not implemented and always yields non-match",
+      "input": { "origin": "https://app.example.com", "candidate": "https://example.com", "mode": "sameSite" },
+      "expect": { "parseOk": true, "parts": { "scheme": "https", "host": "app.example.com", "port": 443 }, "match": false }
+    }
+  ]
+}

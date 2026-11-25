@@ -1,0 +1,90 @@
+{
+  "category": "cookie-profile",
+  "spec": "docs/cookies.md#the-startup-validation",
+  "vectors": [
+    {
+      "id": "cookie.auth-default-valid",
+      "description": "Default authentication profile passes all rules",
+      "input": { "profile": { "name": "auth", "secure": true, "httpOnly": true, "sameSite": "lax", "path": "/", "domain": null, "namePrefix": "" }, "role": "auth" },
+      "expect": { "valid": true, "violations": [] }
+    },
+    {
+      "id": "cookie.session-default-valid",
+      "description": "Default session profile passes all rules",
+      "input": { "profile": { "name": "session", "secure": true, "httpOnly": true, "sameSite": "strict", "path": "/", "domain": null, "namePrefix": "" }, "role": "session" },
+      "expect": { "valid": true, "violations": [] }
+    },
+    {
+      "id": "cookie.csrf-default-valid",
+      "description": "Default CSRF profile passes (HttpOnly=false is allowed for this role)",
+      "input": { "profile": { "name": "csrf", "secure": true, "httpOnly": false, "sameSite": "lax", "path": "/", "domain": null, "namePrefix": "" }, "role": "csrf" },
+      "expect": { "valid": true, "violations": [] }
+    },
+    {
+      "id": "cookie.host-prefix-requires-secure",
+      "description": "__Host- prefix without Secure is a violation",
+      "input": { "profile": { "name": "auth", "secure": false, "httpOnly": true, "sameSite": "lax", "path": "/", "domain": null, "namePrefix": "__Host-" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["host-prefix-requires-secure"] }
+    },
+    {
+      "id": "cookie.host-prefix-requires-no-domain",
+      "description": "__Host- prefix with a Domain is a violation",
+      "input": { "profile": { "name": "auth", "secure": true, "httpOnly": true, "sameSite": "lax", "path": "/", "domain": "example.com", "namePrefix": "__Host-" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["host-prefix-requires-no-domain"] }
+    },
+    {
+      "id": "cookie.host-prefix-requires-root-path",
+      "description": "__Host- prefix with a non-root Path is a violation",
+      "input": { "profile": { "name": "auth", "secure": true, "httpOnly": true, "sameSite": "lax", "path": "/app", "domain": null, "namePrefix": "__Host-" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["host-prefix-requires-root-path"] }
+    },
+    {
+      "id": "cookie.secure-prefix-requires-secure",
+      "description": "__Secure- prefix without Secure is a violation",
+      "input": { "profile": { "name": "auth", "secure": false, "httpOnly": true, "sameSite": "lax", "path": "/", "domain": null, "namePrefix": "__Secure-" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["secure-prefix-requires-secure"] }
+    },
+    {
+      "id": "cookie.samesite-none-requires-secure",
+      "description": "SameSite=None without Secure is a violation",
+      "input": { "profile": { "name": "auth", "secure": false, "httpOnly": true, "sameSite": "none", "path": "/", "domain": null, "namePrefix": "" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["samesite-none-requires-secure"] }
+    },
+    {
+      "id": "cookie.path-must-start-slash",
+      "description": "Path not starting with / is a violation",
+      "input": { "profile": { "name": "auth", "secure": true, "httpOnly": true, "sameSite": "lax", "path": "app", "domain": null, "namePrefix": "" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["path-must-start-slash"] }
+    },
+    {
+      "id": "cookie.empty-name",
+      "description": "Empty effective name is a violation",
+      "input": { "profile": { "name": "", "secure": true, "httpOnly": true, "sameSite": "lax", "path": "/", "domain": null, "namePrefix": "" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["empty-name"] }
+    },
+    {
+      "id": "cookie.forbidden-name-char",
+      "description": "Semicolon in name is a violation per RFC 6265",
+      "input": { "profile": { "name": "au;th", "secure": true, "httpOnly": true, "sameSite": "lax", "path": "/", "domain": null, "namePrefix": "" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["forbidden-name-char"] }
+    },
+    {
+      "id": "cookie.undefined-samesite",
+      "description": "Unspecified SameSite value is a violation",
+      "input": { "profile": { "name": "auth", "secure": true, "httpOnly": true, "sameSite": "unspecified", "path": "/", "domain": null, "namePrefix": "" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["undefined-samesite"] }
+    },
+    {
+      "id": "cookie.domain-with-scheme",
+      "description": "Domain containing a scheme is a violation",
+      "input": { "profile": { "name": "auth", "secure": true, "httpOnly": true, "sameSite": "lax", "path": "/", "domain": "https://example.com", "namePrefix": "" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["invalid-domain"] }
+    },
+    {
+      "id": "cookie.undefined-prefix",
+      "description": "A prefix outside the defined set is a violation",
+      "input": { "profile": { "name": "auth", "secure": true, "httpOnly": true, "sameSite": "lax", "path": "/", "domain": null, "namePrefix": "__Bad-" }, "role": "auth" },
+      "expect": { "valid": false, "violations": ["undefined-prefix"] }
+    }
+  ]
+}

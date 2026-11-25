@@ -1,0 +1,36 @@
+{
+  "category": "error-code",
+  "spec": "SPEC.md#error-codes",
+  "vectors": [
+    {
+      "id": "error-code.from.lowercase",
+      "description": "From normalizes lowercase input to the canonical uppercase code",
+      "input": { "raw": "validation_error" },
+      "expect": { "valid": true, "code": "VALIDATION_ERROR", "status": 400 }
+    },
+    {
+      "id": "error-code.from.mixed-case-whitespace",
+      "description": "From trims surrounding whitespace and uppercases",
+      "input": { "raw": "  Internal_Error  " },
+      "expect": { "valid": true, "code": "INTERNAL_ERROR", "status": 500 }
+    },
+    {
+      "id": "error-code.from.empty",
+      "description": "From rejects null, empty, and whitespace input",
+      "input": { "raw": "   " },
+      "expect": { "valid": false, "code": null, "status": null }
+    },
+    {
+      "id": "error-code.status.all-standard",
+      "description": "All 14 standard codes map to their SPEC.md statuses",
+      "input": { "codes": ["VALIDATION_ERROR","AUTHENTICATION_REQUIRED","FORBIDDEN","CSRF_HEADER_MISSING","CSRF_TOKEN_INVALID","CSRF_TOKEN_EXPIRED","CSRF_ORIGIN_REJECTED","RESOURCE_NOT_FOUND","CONFLICT","RATE_LIMITED","INTERNAL_ERROR","NOT_ACCEPTABLE","UNSUPPORTED_MEDIA_TYPE"] },
+      "expect": { "statuses": { "VALIDATION_ERROR": 400, "AUTHENTICATION_REQUIRED": 401, "FORBIDDEN": 403, "CSRF_HEADER_MISSING": 403, "CSRF_TOKEN_INVALID": 403, "CSRF_TOKEN_EXPIRED": 403, "CSRF_ORIGIN_REJECTED": 403, "RESOURCE_NOT_FOUND": 404, "CONFLICT": 409, "RATE_LIMITED": 429, "INTERNAL_ERROR": 500, "NOT_ACCEPTABLE": 406, "UNSUPPORTED_MEDIA_TYPE": 415 } }
+    },
+    {
+      "id": "error-code.custom-falls-to-500",
+      "description": "A custom code not in the standard table maps to HTTP 500",
+      "input": { "raw": "ORDER_LOCKED" },
+      "expect": { "valid": true, "code": "ORDER_LOCKED", "status": 500 }
+    }
+  ]
+}

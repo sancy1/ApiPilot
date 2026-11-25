@@ -1,0 +1,66 @@
+{
+  "category": "fetch-metadata",
+  "spec": "docs/fetch-metadata.md#the-three-profiles",
+  "vectors": [
+    {
+      "id": "fetch-metadata.off-allows-all",
+      "description": "Off profile allows every request including cross-site",
+      "input": { "profile": "off", "site": "cross-site", "mode": "no-cors", "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "allow", "reason": "none" }
+    },
+    {
+      "id": "fetch-metadata.compat.same-origin",
+      "description": "Compat allows a well-formed same-origin site value",
+      "input": { "profile": "compat", "site": "same-origin", "mode": "cors", "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "allow", "reason": "none" }
+    },
+    {
+      "id": "fetch-metadata.compat.cross-site-rejected",
+      "description": "Compat rejects a present disallowed cross-site value",
+      "input": { "profile": "compat", "site": "cross-site", "mode": "cors", "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "reject", "reason": "disallowedSiteValue" }
+    },
+    {
+      "id": "fetch-metadata.compat.missing-allowed",
+      "description": "Compat permits a missing site header when AllowMissingHeaders is true",
+      "input": { "profile": "compat", "site": null, "mode": null, "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "allow", "reason": "none" }
+    },
+    {
+      "id": "fetch-metadata.strict.missing-rejected",
+      "description": "Strict rejects a missing site header when AllowMissingHeaders is false",
+      "input": { "profile": "strict", "site": null, "mode": null, "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": false },
+      "expect": { "decision": "reject", "reason": "missingSiteHeader" }
+    },
+    {
+      "id": "fetch-metadata.strict.missing-allowed-when-flag",
+      "description": "Strict permits a missing site header when AllowMissingHeaders is true",
+      "input": { "profile": "strict", "site": null, "mode": null, "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "allow", "reason": "none" }
+    },
+    {
+      "id": "fetch-metadata.allowmissing-never-rescues-disallowed",
+      "description": "AllowMissingHeaders=true does NOT rescue a present disallowed site value",
+      "input": { "profile": "strict", "site": "cross-site", "mode": "cors", "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "reject", "reason": "disallowedSiteValue" }
+    },
+    {
+      "id": "fetch-metadata.malformed-site",
+      "description": "A site value outside the spec set is malformed",
+      "input": { "profile": "compat", "site": "bogus-value", "mode": "cors", "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "allow", "reason": "none" }
+    },
+    {
+      "id": "fetch-metadata.disallowed-mode",
+      "description": "A present disallowed mode value rejects even when site passes",
+      "input": { "profile": "compat", "site": "same-origin", "mode": "websocket", "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "reject", "reason": "disallowedModeValue" }
+    },
+    {
+      "id": "fetch-metadata.mode-absent-skipped",
+      "description": "A missing mode header is not checked when site passes",
+      "input": { "profile": "compat", "site": "same-site", "mode": null, "allowedSiteValues": ["same-origin","same-site","none"], "allowedModeValues": ["cors","same-origin","navigate"], "allowMissingHeaders": true },
+      "expect": { "decision": "allow", "reason": "none" }
+    }
+  ]
+}

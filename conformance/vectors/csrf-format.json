@@ -1,0 +1,72 @@
+{
+  "category": "csrf-format",
+  "spec": "docs/csrf.md#the-token-format",
+  "vectors": [
+    {
+      "id": "csrf-format.encode.basic",
+      "description": "Encode produces issuedAt|random|binding with invariant integer timestamp",
+      "input": { "op": "encode", "issuedAtUnixSeconds": 1730000000, "randomBase64Url": "abc123-_XYZ", "bindingFingerprint": "bindFP" },
+      "expect": { "payload": "1730000000|abc123-_XYZ|bindFP" }
+    },
+    {
+      "id": "csrf-format.decode.roundtrip",
+      "description": "Decode of a well-formed payload returns all three parts",
+      "input": { "op": "decode", "payload": "1730000000|abc123-_XYZ|bindFP" },
+      "expect": { "valid": true, "issuedAtUnixSeconds": 1730000000, "randomBase64Url": "abc123-_XYZ", "bindingFingerprint": "bindFP" }
+    },
+    {
+      "id": "csrf-format.decode.empty",
+      "description": "Empty payload is invalid",
+      "input": { "op": "decode", "payload": "" },
+      "expect": { "valid": false }
+    },
+    {
+      "id": "csrf-format.decode.missing-delimiter",
+      "description": "Payload without delimiters is invalid",
+      "input": { "op": "decode", "payload": "nodelimitershere" },
+      "expect": { "valid": false }
+    },
+    {
+      "id": "csrf-format.decode.extra-delimiter",
+      "description": "Payload with a third delimiter is invalid",
+      "input": { "op": "decode", "payload": "1730000000|rand|bind|extra" },
+      "expect": { "valid": false }
+    },
+    {
+      "id": "csrf-format.decode.empty-part",
+      "description": "Empty random or binding part is invalid",
+      "input": { "op": "decode", "payload": "1730000000||bindFP" },
+      "expect": { "valid": false }
+    },
+    {
+      "id": "csrf-format.decode.noninteger-time",
+      "description": "Non-integer issuedAt is invalid",
+      "input": { "op": "decode", "payload": "notanumber|rand|bind" },
+      "expect": { "valid": false }
+    },
+    {
+      "id": "csrf-format.decode.time-min-boundary",
+      "description": "Unix seconds at the minimum representable boundary is valid",
+      "input": { "op": "decode", "payload": "-62135596800|rand|bind" },
+      "expect": { "valid": true, "issuedAtUnixSeconds": -62135596800 }
+    },
+    {
+      "id": "csrf-format.decode.time-max-boundary",
+      "description": "Unix seconds at the maximum representable boundary is valid",
+      "input": { "op": "decode", "payload": "253402300799|rand|bind" },
+      "expect": { "valid": true, "issuedAtUnixSeconds": 253402300799 }
+    },
+    {
+      "id": "csrf-format.decode.time-below-min",
+      "description": "Unix seconds below the minimum boundary is invalid",
+      "input": { "op": "decode", "payload": "-62135596801|rand|bind" },
+      "expect": { "valid": false }
+    },
+    {
+      "id": "csrf-format.encode.rejects-pipe",
+      "description": "Encode rejects a binding containing the pipe delimiter",
+      "input": { "op": "encode", "issuedAtUnixSeconds": 1730000000, "randomBase64Url": "abc", "bindingFingerprint": "bad|bind" },
+      "expect": { "error": "argument" }
+    }
+  ]
+}

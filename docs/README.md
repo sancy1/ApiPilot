@@ -28,9 +28,16 @@ root files: `SPEC.md` (wire-format contract), `PLANNING.md` (phase plan),
 | Document | Status | Phase |
 | --- | --- | --- |
 | `api-inventory/README.md` | Shipped | 1.0.6 |
+| `port-behavioral-spec.md` | Shipped | 1.0.6 |
+| `conformance-vectors.md` | Shipped | 1.0.6 |
 
 Machine-generated inventory of every public type and member in the three
 NuGet packages — the parity checklist for language ports.
+`port-behavioral-spec.md` is the consolidated behavioral spec: every rule
+a port must replicate, distilled from SPEC.md, the per-concern docs, the
+API inventory, and the C# source. `conformance-vectors.md` defines the
+language-neutral fixture format in `../conformance/vectors/` that proves
+wire-contract parity.
 
 ### Contracts and responses
 

@@ -1,0 +1,13 @@
+{
+  "category": "sort-direction",
+  "spec": "docs/filtering-sorting.md#the-two-part-sort-model",
+  "vectors": [
+    { "id": "sort-direction.asc", "description": "asc parses to Ascending", "input": { "raw": "asc" }, "expect": { "valid": true, "direction": "asc" } },
+    { "id": "sort-direction.desc", "description": "desc parses to Descending", "input": { "raw": "desc" }, "expect": { "valid": true, "direction": "desc" } },
+    { "id": "sort-direction.uppercase", "description": "Case-insensitive matching accepts ASC", "input": { "raw": "ASC" }, "expect": { "valid": true, "direction": "asc" } },
+    { "id": "sort-direction.mixedcase", "description": "Case-insensitive matching accepts DeSc", "input": { "raw": "DeSc" }, "expect": { "valid": true, "direction": "desc" } },
+    { "id": "sort-direction.null", "description": "Null input is invalid", "input": { "raw": null }, "expect": { "valid": false, "direction": null } },
+    { "id": "sort-direction.empty", "description": "Empty input is invalid", "input": { "raw": "" }, "expect": { "valid": false, "direction": null } },
+    { "id": "sort-direction.garbage", "description": "Unrecognized token is invalid", "input": { "raw": "sideways" }, "expect": { "valid": false, "direction": null } }
+  ]
+}

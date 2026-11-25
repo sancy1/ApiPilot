@@ -1,0 +1,48 @@
+{
+  "category": "envelope",
+  "spec": "SPEC.md#response-envelopes",
+  "vectors": [
+    {
+      "id": "envelope.success.object",
+      "description": "Success envelope with object data carries all four top-level keys",
+      "input": { "kind": "success", "data": { "id": 42, "name": "widget" }, "message": null, "meta": { "requestId": "req-1", "timestamp": "2026-01-01T00:00:00Z", "extra": {} } },
+      "expect": { "json": { "success": true, "data": { "id": 42, "name": "widget" }, "message": null, "meta": { "requestId": "req-1", "timestamp": "2026-01-01T00:00:00Z", "extra": {} } } }
+    },
+    {
+      "id": "envelope.success.null-data",
+      "description": "data key is present even when the payload is null",
+      "input": { "kind": "success", "data": null, "message": "done", "meta": { "requestId": "req-2", "timestamp": "2026-01-01T00:00:00Z", "extra": {} } },
+      "expect": { "json": { "success": true, "data": null, "message": "done", "meta": { "requestId": "req-2", "timestamp": "2026-01-01T00:00:00Z", "extra": {} } } }
+    },
+    {
+      "id": "envelope.collection",
+      "description": "Collection is a success envelope with data as an array",
+      "input": { "kind": "success", "data": [{ "id": 1 }, { "id": 2 }], "message": null, "meta": { "requestId": "req-3", "timestamp": "2026-01-01T00:00:00Z", "extra": {} } },
+      "expect": { "json": { "success": true, "data": [{ "id": 1 }, { "id": 2 }], "message": null, "meta": { "requestId": "req-3", "timestamp": "2026-01-01T00:00:00Z", "extra": {} } } }
+    },
+    {
+      "id": "envelope.paginated",
+      "description": "Paginated envelope adds pagination sibling of data with all six fields",
+      "input": { "kind": "paginated", "data": [{ "id": 1 }], "message": null, "meta": { "requestId": "req-4", "timestamp": "2026-01-01T00:00:00Z", "extra": {} }, "pagination": { "page": 2, "pageSize": 20, "totalItems": 143, "totalPages": 8, "hasNext": true, "hasPrevious": true } },
+      "expect": { "json": { "success": true, "data": [{ "id": 1 }], "message": null, "meta": { "requestId": "req-4", "timestamp": "2026-01-01T00:00:00Z", "extra": {} }, "pagination": { "page": 2, "pageSize": 20, "totalItems": 143, "totalPages": 8, "hasNext": true, "hasPrevious": true } } }
+    },
+    {
+      "id": "envelope.error.plain",
+      "description": "Error envelope has success false, error object, and meta; no fields key",
+      "input": { "kind": "error", "code": "RESOURCE_NOT_FOUND", "message": "The resource was not found.", "meta": { "requestId": "req-5" } },
+      "expect": { "json": { "success": false, "error": { "code": "RESOURCE_NOT_FOUND", "message": "The resource was not found." }, "meta": { "requestId": "req-5" } } }
+    },
+    {
+      "id": "envelope.error.validation-fields",
+      "description": "VALIDATION_ERROR carries error.fields mapping field names to message arrays",
+      "input": { "kind": "error", "code": "VALIDATION_ERROR", "message": "One or more validation errors occurred.", "fields": { "email": ["Email is required."], "items[0].price": ["Price must be positive.", "Price is required."] }, "meta": { "requestId": "req-6" } },
+      "expect": { "json": { "success": false, "error": { "code": "VALIDATION_ERROR", "message": "One or more validation errors occurred.", "fields": { "email": ["Email is required."], "items[0].price": ["Price must be positive.", "Price is required."] } }, "meta": { "requestId": "req-6" } } }
+    },
+    {
+      "id": "envelope.keys-pinned",
+      "description": "Envelope keys are literal regardless of property naming policy",
+      "input": { "kind": "success", "data": {}, "message": null, "meta": { "requestId": "r", "timestamp": "t", "extra": {} }, "namingPolicy": "PascalCase" },
+      "expect": { "jsonKeys": ["success", "data", "message", "meta"], "note": "envelope keys never follow PropertyNamingPolicy" }
+    }
+  ]
+}

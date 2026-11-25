@@ -1,0 +1,48 @@
+{
+  "category": "field-key",
+  "spec": "docs/validation.md#field-key-normalization",
+  "vectors": [
+    {
+      "id": "field-key.jsonpath-prefix",
+      "description": "Leading $. JSONPath prefix is stripped",
+      "input": { "raw": "$.email", "transform": "normalize" },
+      "expect": { "normalized": "email" }
+    },
+    {
+      "id": "field-key.camelcase-segments",
+      "description": "Each dot-segment is camelCased independently",
+      "input": { "raw": "Items[0].Price", "transform": "normalize" },
+      "expect": { "normalized": "items[0].price" }
+    },
+    {
+      "id": "field-key.index-preserved",
+      "description": "Bracket array indices are preserved verbatim",
+      "input": { "raw": "$.items[12].unitPrice", "transform": "normalize" },
+      "expect": { "normalized": "items[12].unitPrice" }
+    },
+    {
+      "id": "field-key.already-camel",
+      "description": "Already-canonical keys pass through unchanged",
+      "input": { "raw": "items[0].price", "transform": "normalize" },
+      "expect": { "normalized": "items[0].price" }
+    },
+    {
+      "id": "field-key.deep-nesting",
+      "description": "Deep nesting normalizes every segment",
+      "input": { "raw": "$.Order.Items[0].Customer.Address.ZipCode", "transform": "normalize" },
+      "expect": { "normalized": "order.items[0].customer.address.zipCode" }
+    },
+    {
+      "id": "field-key.passthrough-transform",
+      "description": "A custom KeyTransform replaces normalization entirely",
+      "input": { "raw": "$.Foo.Bar", "transform": "passthrough" },
+      "expect": { "normalized": "$.Foo.Bar" }
+    },
+    {
+      "id": "field-key.simple-name",
+      "description": "Simple field names are unchanged",
+      "input": { "raw": "email", "transform": "normalize" },
+      "expect": { "normalized": "email" }
+    }
+  ]
+}

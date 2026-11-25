@@ -1,0 +1,36 @@
+{
+  "category": "correlation-id",
+  "spec": "docs/correlation.md#the-middleware",
+  "vectors": [
+    {
+      "id": "correlation.valid-incoming",
+      "description": "A valid incoming header value is used as the correlation ID under every policy",
+      "input": { "headerValue": "01JZX4K8Q2M9N3P5R7S9T1V3W5", "patternMatches": true, "policy": "replace" },
+      "expect": { "effectiveId": "incoming", "warn": false }
+    },
+    {
+      "id": "correlation.absent-header",
+      "description": "An absent header always generates a new ID",
+      "input": { "headerValue": null, "patternMatches": false, "policy": "replace" },
+      "expect": { "effectiveId": "generated", "warn": false }
+    },
+    {
+      "id": "correlation.invalid-replace",
+      "description": "Invalid incoming ID under Replace policy generates a new ID silently",
+      "input": { "headerValue": "bad id!", "patternMatches": false, "policy": "replace" },
+      "expect": { "effectiveId": "generated", "warn": false }
+    },
+    {
+      "id": "correlation.invalid-reject",
+      "description": "Invalid incoming ID under Reject policy produces a rejection",
+      "input": { "headerValue": "bad id!", "patternMatches": false, "policy": "reject" },
+      "expect": { "effectiveId": "rejected", "warn": false }
+    },
+    {
+      "id": "correlation.invalid-useas-is",
+      "description": "Invalid incoming ID under UseAsIs policy is accepted with a warning",
+      "input": { "headerValue": "bad id!", "patternMatches": false, "policy": "useAsIs" },
+      "expect": { "effectiveId": "incoming", "warn": true }
+    }
+  ]
+}

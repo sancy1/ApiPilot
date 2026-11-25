@@ -1,0 +1,60 @@
+{
+  "category": "pagination",
+  "spec": "docs/pagination.md#the-paginated-envelope",
+  "vectors": [
+    {
+      "id": "pagination.totalpages.remainder",
+      "description": "totalPages is ceil(totalItems/pageSize)",
+      "input": { "totalItems": 143, "page": 2, "pageSize": 20, "pageNumberBase": 1, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "totalPages": 8, "hasNext": true, "hasPrevious": true, "internalPage": 2, "valid": true }
+    },
+    {
+      "id": "pagination.totalpages.exact-multiple",
+      "description": "Exact multiple yields no extra page",
+      "input": { "totalItems": 100, "page": 5, "pageSize": 20, "pageNumberBase": 1, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "totalPages": 5, "hasNext": false, "hasPrevious": true, "internalPage": 5, "valid": true }
+    },
+    {
+      "id": "pagination.totalpages.zero-items",
+      "description": "Zero items yields totalPages of 1 (minimum)",
+      "input": { "totalItems": 0, "page": 1, "pageSize": 20, "pageNumberBase": 1, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "totalPages": 1, "hasNext": false, "hasPrevious": false, "internalPage": 1, "valid": true }
+    },
+    {
+      "id": "pagination.first-page",
+      "description": "First page has no previous",
+      "input": { "totalItems": 50, "page": 1, "pageSize": 20, "pageNumberBase": 1, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "totalPages": 3, "hasNext": true, "hasPrevious": false, "internalPage": 1, "valid": true }
+    },
+    {
+      "id": "pagination.last-page",
+      "description": "Last page has no next",
+      "input": { "totalItems": 50, "page": 3, "pageSize": 20, "pageNumberBase": 1, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "totalPages": 3, "hasNext": false, "hasPrevious": true, "internalPage": 3, "valid": true }
+    },
+    {
+      "id": "pagination.base-zero-conversion",
+      "description": "PageNumberBase=0 converts wire page 0 to internal page 1",
+      "input": { "totalItems": 50, "page": 0, "pageSize": 20, "pageNumberBase": 0, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "totalPages": 3, "hasNext": true, "hasPrevious": false, "internalPage": 1, "valid": true }
+    },
+    {
+      "id": "pagination.page-below-base",
+      "description": "Wire page below PageNumberBase is invalid",
+      "input": { "totalItems": 50, "page": -1, "pageSize": 20, "pageNumberBase": 1, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "valid": false, "error": "page-below-base" }
+    },
+    {
+      "id": "pagination.pagesize-over-max",
+      "description": "PageSize above MaxPageSize is invalid",
+      "input": { "totalItems": 50, "page": 1, "pageSize": 101, "pageNumberBase": 1, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "valid": false, "error": "pagesize-over-max" }
+    },
+    {
+      "id": "pagination.defaults-filled",
+      "description": "Missing page and pageSize fall back to defaults",
+      "input": { "totalItems": 50, "page": null, "pageSize": null, "pageNumberBase": 1, "maxPageSize": 100, "defaultPageSize": 20 },
+      "expect": { "totalPages": 3, "hasNext": true, "hasPrevious": false, "internalPage": 1, "pageSize": 20, "valid": true }
+    }
+  ]
+}

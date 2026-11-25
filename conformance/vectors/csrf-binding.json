@@ -1,0 +1,42 @@
+{
+  "category": "csrf-binding",
+  "spec": "docs/csrf.md#the-binding-csrfbindingprovider",
+  "vectors": [
+    {
+      "id": "csrf-binding.subject.kat",
+      "description": "Subject-kind binding fingerprint is a known-answer SHA-256 base64url value",
+      "input": { "source": "user-123", "kind": "subject" },
+      "expect": { "fingerprint": "1ZPTpshB4NxKp5W62TkKO1PZwBIuGKKd2YZDpcdWUJU" }
+    },
+    {
+      "id": "csrf-binding.session.kat",
+      "description": "Session-kind binding prefixes source with 'session:' before hashing",
+      "input": { "source": "sess-abc", "kind": "session" },
+      "expect": { "fingerprint": "0MvxuqAouBlH-u6Z__GZq9o2BHXiH_OCZP4Z2Yxjw-M" }
+    },
+    {
+      "id": "csrf-binding.preauth.kat",
+      "description": "PreAuth-kind binding prefixes source with 'preauth:' before hashing",
+      "input": { "source": "device-xyz", "kind": "preauth" },
+      "expect": { "fingerprint": "5jRDLdmWpJXyVtoSRVHqssLgxK-4lk3UxY9W-Dx3Cwo" }
+    },
+    {
+      "id": "csrf-binding.deterministic",
+      "description": "Same source and kind always produce the same fingerprint",
+      "input": { "source": "user-123", "kind": "subject" },
+      "expect": { "fingerprint": "1ZPTpshB4NxKp5W62TkKO1PZwBIuGKKd2YZDpcdWUJU" }
+    },
+    {
+      "id": "csrf-binding.kinds-differ",
+      "description": "Session-kind over the same source produces a different fingerprint than subject-kind",
+      "input": { "source": "user-123", "kind": "session" },
+      "expect": { "fingerprint": "oSxweUsKr5uAKFwTx4zKZuN1_Mc9rTTeCBa3rE-d7is" }
+    },
+    {
+      "id": "csrf-binding.unicode-source",
+      "description": "Unicode source is hashed as UTF-8 without error",
+      "input": { "source": "usér--123", "kind": "subject" },
+      "expect": { "fingerprint": "rPz1ZrIfdmcsQLw7P2BH75hJrE7-kq31mv5qZWA2LcM" }
+    }
+  ]
+}
