@@ -42,7 +42,7 @@ public sealed class ErrorResponseSerializationTests
     private static JsonElement Serialize(ErrorResponse response)
     {
         var json = JsonSerializer.Serialize(response);
-        return JsonDocument.Parse(json).RootElement.Clone();
+        return JsonElement.Parse(json).Clone();
     }
 
     /// <summary>The top-level shape has Success, Error, and Meta.</summary>

@@ -50,7 +50,7 @@ public sealed class OpenApiSchemaParityTests
         var meta = new ResponseMetadata { RequestId = "req-parity-001" };
         var response = new ErrorResponse(error, meta);
         var json = JsonSerializer.Serialize(response, s_wireOptions);
-        return JsonDocument.Parse(json).RootElement.Clone();
+        return JsonElement.Parse(json).Clone();
     }
 
     private static HashSet<string> KeysOf(JsonElement element)

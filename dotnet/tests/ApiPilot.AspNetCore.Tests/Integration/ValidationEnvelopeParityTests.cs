@@ -67,7 +67,7 @@ public sealed class ValidationEnvelopeParityTests
     {
         var response = await host.Client.PostAsync(url, InvalidBody());
         var json = await response.Content.ReadAsStringAsync();
-        return JsonDocument.Parse(json).RootElement.Clone();
+        return JsonElement.Parse(json).Clone();
     }
 
     [Test]
